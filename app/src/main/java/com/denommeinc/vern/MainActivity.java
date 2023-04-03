@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements
     public static int supportedPID_21_40 = 0;
     public static int supportedPID_41_60 = 0;
     public static int supportedPID_61_80 = 0;
-    public static int obdStandards = 0;
+    public String obdStandards = null;
     public static int intakeTemp = 0;
 
     public static double distance = 0.0,
@@ -230,11 +230,11 @@ public class MainActivity extends AppCompatActivity implements
         MainActivity.fuelLevel = fuelLevel;
     }
 
-    public static int getObdStandards() {
+    public String getObdStandards() {
         return obdStandards;
     }
-    public static void setObdStandards(int obdStandards) {
-        MainActivity.obdStandards = obdStandards;
+    public void setObdStandards(String obdStandards) {
+        this.obdStandards = obdStandards;
     }
 
     public static String getCurrentProtocol() {
@@ -439,12 +439,6 @@ public class MainActivity extends AppCompatActivity implements
 
     // Widgets
     private TextView mConnectionStatus;
-    TextView rpm_txt;
-    TextView speed_txt;
-    TextView temperature_txt;
-    TextView voltage_txt;
-    TextView response_txt;
-    TextView responseValue_txt;
     TextView deviceStatus_txt;
     TextView protocol_txt;
     TextView standards_txt;
@@ -453,16 +447,9 @@ public class MainActivity extends AppCompatActivity implements
 
     Spinner cmdSelection;
     ImageButton gauges_btn;
-    ToggleButton initialCMD_tb,
-            allCMD_tb,
-            userCMD_tb,
-            atCMD_tb,
-            kLineCMD_tb;
+    ToggleButton kLineCMD_tb;
 
     Button sendCMD_btn;
-    ProgressBar mRPM;
-    ProgressBar mSpeed;
-
     // Views
     FragmentContainerView fcv;
 
@@ -494,32 +481,23 @@ public class MainActivity extends AppCompatActivity implements
                             case BluetoothIOGateway.STATE_CONNECTING:
                                 mConnectionStatus.setText(getString(R.string.BT_connecting));
                                 mConnectionStatus.setBackgroundColor(Color.rgb(197, 145, 19));
-                                mRPM.setIndeterminate(true);
-                                mSpeed.setIndeterminate(true);
                                 setCONNECTED(false);
                                 break;
 
                             case BluetoothIOGateway.STATE_CONNECTED:
                                 mConnectionStatus.setText(getString(R.string.BT_status_connected_to) + " " + mConnectedDeviceName);
                                 mConnectionStatus.setBackgroundColor(Color.rgb(65, 131, 19));
-
-                                mRPM.setIndeterminate(false);
-                                mSpeed.setIndeterminate(false);
                                 sendInitialCommands(getApplicationContext());
                                 INITIAL_SENT = true;
                                 setCONNECTED(true);
                                 break;
 
                             case BluetoothIOGateway.STATE_LISTEN:
-                                mRPM.setIndeterminate(true);
-                                mSpeed.setIndeterminate(true);
                                 setCONNECTED(false);
 
                             case BluetoothIOGateway.STATE_NONE:
                                 mConnectionStatus.setText(getString(R.string.BT_status_not_connected));
                                 mConnectionStatus.setBackgroundColor(Color.rgb(190, 19, 15));
-                                mRPM.setIndeterminate(false);
-                                mSpeed.setIndeterminate(false);
                                 setCONNECTED(false);
                                 break;
 
@@ -534,11 +512,8 @@ public class MainActivity extends AppCompatActivity implements
                         // construct a string from the valid bytes in the buffer
                         String readMessage = new String(readBuf, 0, msg.arg1);
 
-                        //  Log.i(RESPONSE, "Unedited readMessage: \t" + readMessage);
-
                         readMessage = readMessage.trim();
                         readMessage = readMessage.toUpperCase();
-                     //   displayLog(mConnectedDeviceName + ": " + readMessage + " \t\t-readMessage");
                         char lastChar = ' ';
                         if (!inSimulatorMode) {
                             try {
@@ -569,9 +544,6 @@ public class MainActivity extends AppCompatActivity implements
                         // construct a string from the buffer
                         String writeMessage = new String(writeBuf);
 
-                  //      Log.i(RESPONSE, "Unedited writeMessage: \t" + writeMessage + "\t\t-writeMessage");
-                        //displayLog("Me: " + writeMessage);
-
                         mSbCmdResp.append("W>>");
                         mSbCmdResp.append(writeMessage);
                         mSbCmdResp.append("\n");
@@ -589,9 +561,7 @@ public class MainActivity extends AppCompatActivity implements
                         break;
                 }
             }
-
         };
-
 
     private void showGaugeViewFragment() {
         fcv.setVisibility(View.VISIBLE);
@@ -613,9 +583,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // log
-     //   displayLog("=>\n***************\n     ELM 327 started\n***************");
-
         // Fragment for Gauge
         fcv = findViewById(R.id.fragment_view);
 
@@ -628,55 +595,22 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
-        initialCMD_tb = findViewById(R.id.initialCMD_tb);
-       // initialCMD_tb.setChecked(true);
-        allCMD_tb = findViewById(R.id.allCMD_tb);
-        userCMD_tb = findViewById(R.id.userCMD_tb);
-        atCMD_tb = findViewById(R.id.atCMD_tb);
+
         kLineCMD_tb = findViewById(R.id.kLineCMD_tb);
+        kLineCMD_tb.setEnabled(true);
         sendCMD_btn = findViewById(R.id.sendCMD_btn);
-        responseValue_txt = findViewById(R.id.responseValue_txt);
-        deviceStatus_txt = findViewById(R.id.deviceStatus_txt);
-        kLine_speed = findViewById(R.id.kLine_speed_txt);
-        kLine_rpm = findViewById(R.id.kLine_rpm_txt);
 
-        // connect widgets
-        speed_txt = findViewById(R.id.speed_txt);
-        rpm_txt = findViewById(R.id.rpm_txt);
-
-        temperature_txt = findViewById(R.id.selection_txt);
-        voltage_txt = findViewById(R.id.voltage_txt);
-        response_txt = findViewById(R.id.response_txt);
         mConnectionStatus = findViewById(R.id.tvConnectionStatus);
         protocol_txt = findViewById(R.id.output_txt);
         standards_txt = findViewById(R.id.standards_txt);
 
-        mRPM = findViewById(R.id.determinateBar);
-        mRPM.setMax(8000);
-        mRPM.setIndeterminate(false);
-        mRPM.setProgress(0);
-
-        mSpeed = findViewById(R.id.determinateBarSpeed);
-        mSpeed.setMax(100);
-        mSpeed.setIndeterminate(false);
-        mSpeed.setProgress(0);
-
-        gauges_btn = findViewById(R.id.gauges_btn);
-        gauges_btn.setOnClickListener(view -> showGaugeViewFragment());
-
         // make sure user has Bluetooth hardware
-     //   displayLog("Try to check hardware...");
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
             displayMessage(NO_BLUETOOTH);
-           // displayLog(NO_BLUETOOTH);
-
             MainActivity.this.finish();
         }
-        // log
-       // displayLog("Bluetooth found.");
-
         // Init variables
         mSbCmdResp = new StringBuilder();
         mPartialResponse = new StringBuilder();
@@ -685,8 +619,6 @@ public class MainActivity extends AppCompatActivity implements
         sendCMD_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //sendOBD2CMD = new SendOBD2CMD(getApplicationContext(), "AT DP", mIOGateway);
-                //sendOBD2CMD = new SendOBD2CMD(getApplicationContext(), "ATDP", mIOGateway);
                 sendUserCommands(getApplicationContext());
                 sendKlineCommands(getApplicationContext());
             }
@@ -700,47 +632,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
-
-        initialCMD_tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    sendInitialCommands(getApplicationContext());
-                }
-            }
-        });
-
-
-        allCMD_tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    sendAllCommands(getApplicationContext());
-                    ALL_SENT = true;
-                }
-            }
-        });
-
-        userCMD_tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //sendUserCommands = new SendUserCommands(getApplicationContext(), mIOGateway);
-                    sendUserCommands(getApplicationContext());
-                    USER_SENT = true;
-                }
-            }
-        });
-
-        atCMD_tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    sendATCommands(getApplicationContext());
-                    AT_SENT = true;
-                }
-            }
-        });
     }
     @SuppressLint("MissingPermission")
     @Override
@@ -750,15 +641,11 @@ public class MainActivity extends AppCompatActivity implements
         if (mBluetoothAdapter == null) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         }
-
         // make sure Bluetooth is enabled
-     //   displayLog("Try to check availability...");
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         } else {
-      //      displayLog("Bluetooth is available");
-
             queryPairedDevices();
             setupMonitor();
         }
@@ -827,7 +714,6 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.menu_clr_scr:
                 mSbCmdResp.setLength(0);
-                voltage_txt.setText(" ");
                 return true;
 
             case R.id.menu_toggle_obd_mode:
@@ -861,12 +747,10 @@ public class MainActivity extends AppCompatActivity implements
         if (requestCode == REQUEST_ENABLE_BT) {
             if (resultCode == RESULT_CANCELED) {
                 displayMessage("Bluetooth not enabled :(");
-              //  displayLog("Bluetooth not enabled :(");
                 return;
             }
 
             if (resultCode == RESULT_OK) {
-              //  displayLog("Bluetooth enabled");
                 queryPairedDevices();
                 setupMonitor();
             }
@@ -883,8 +767,6 @@ public class MainActivity extends AppCompatActivity implements
         if (mIOGateway.getState() == BluetoothIOGateway.STATE_NONE) {
             // Start the Bluetooth chat services
             mIOGateway.start();
-            mRPM.setIndeterminate(true);
-            mSpeed.setIndeterminate(true);
         }
 
         // clear string builder if contains data
@@ -922,15 +804,12 @@ public class MainActivity extends AppCompatActivity implements
     }
     @SuppressLint("MissingPermission")
     private void scanAroundDevices() {
-      //  displayLog("Try to scan around devices...");
-
         if (mReceiver == null) {
             // Register the BroadcastReceiver
             mReceiver = new DeviceBroadcastReceiver();
             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mReceiver, filter);
         }
-
         // Start scanning
         mBluetoothAdapter.startDiscovery();
     }
@@ -939,8 +818,6 @@ public class MainActivity extends AppCompatActivity implements
     private void cancelScanning() {
         if (mBluetoothAdapter.isDiscovering()) {
             mBluetoothAdapter.cancelDiscovery();
-
-           // displayLog("Scanning canceled.");
         }
     }
 
@@ -1000,7 +877,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void sendUserCommands(Context context) {
         USER_SENT = true;
-        //displayLog("SENDING --USER-- COMMANDS...");
         if (inSimulatorMode) {
             displayMessage("You are in simulator mode!");
             return;
@@ -1008,8 +884,6 @@ public class MainActivity extends AppCompatActivity implements
         if (userCMDPointer < 0) {
             userCMDPointer = -1;
         }
-
-
         if (userCMDPointer >= USER_COMMANDS.length - 1) {
             userCMDPointer = 1;
         }
@@ -1024,8 +898,8 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
-
     }
+
     private void sendAllCommands(Context context) {
         ALL_SENT = true;
         //displayLog("SENDING --ALL-- COMMANDS...");
@@ -1051,7 +925,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void sendATCommands(Context context) {
         AT_SENT = true;
-      //  displayLog("SENDING --AT-- COMMANDS...");
         if (inSimulatorMode) {
             displayMessage("You are in simulator mode!");
             return;
@@ -1071,6 +944,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
+
     private void sendKlineCommands(Context context) {
         if (inSimulatorMode) {
             displayMessage("You are in simulator mode!");
@@ -1095,7 +969,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void sendInitialCommands(Context context) {
         INITIAL_SENT = true;
-       // displayLog("SENDING --INITIAL-- COMMANDS...");
         if (inSimulatorMode) {
             displayMessage("You are in simulator mode!");
             return;
@@ -1122,15 +995,6 @@ public class MainActivity extends AppCompatActivity implements
            // Log.i("MA", String.valueOf(device) + "STOPPED");
             deviceStatus_txt.setText(R.string.stopped);
         }
-        /*
-        * "AT SP0", // case 0 Automatically Search/Select Protocol
-            "AT RV", // Voltage // case 1
-            "0105", // Engine Coolant Temp // case 2
-            "010C",// RPM // case 3
-            "010D",// Speed // case 4
-            "011C", // Display Standards // case 5
-            "AT DP" //Display Protocol // case 6
-        * */
         switch (kLineCMDPointer) {
             case 0:
                 if (buffer.contains("AT SP0")) {
@@ -1140,7 +1004,7 @@ public class MainActivity extends AppCompatActivity implements
             case 1:
                 if (buffer.contains("ATRV")) {
                     try {
-                        voltage_txt.setText(buffer);
+                        setVoltage(showVoltage(buffer));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1149,7 +1013,7 @@ public class MainActivity extends AppCompatActivity implements
             case 2:
                 if (buffer.contains("0105")) {
                     try {
-                        showEngineCoolantTemperature(buffer);
+                        setEngineCoolantTemp(showEngineCoolantTemperature(buffer));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1158,8 +1022,8 @@ public class MainActivity extends AppCompatActivity implements
             case 3:
                 if (buffer.contains("010C")) {
                     try {
-                        showEngineRPM(buffer);
-                        kLine_rpm.setText(buffer);
+                        setRpm(showEngineRPM(buffer));
+                        kLine_rpm.setText(getRpm());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1168,8 +1032,8 @@ public class MainActivity extends AppCompatActivity implements
             case 4:
                 if (buffer.contains("010D")) {
                     try {
-                        showVehicleSpeed(buffer);
-                        kLine_speed.setText(buffer);
+                        setSpeed(showVehicleSpeed(buffer));
+                        kLine_speed.setText(getSpeed());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1178,7 +1042,7 @@ public class MainActivity extends AppCompatActivity implements
             case 5:
                 if (buffer.contains("011C")) {
                     try {
-
+                        setObdStandards(showObdStandardsSupported(buffer));
                         showObdStandardsSupported(buffer);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -1227,29 +1091,6 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 mSbCmdResp.append(buffer);
         }
-        if (atCMD_tb.isChecked()) {
-            sendATCommands(getApplicationContext());
-        }
-
-        switch (initialCMDPointer) {
-            case 0: // Engine Coolant Temp
-                int engineCoolantTemp = showEngineCoolantTemperature(buffer);
-
-            case 1: //RPM
-                int rpm = showEngineRPM(buffer);
-
-            case 2: // Speed
-                int speed = showVehicleSpeed(buffer);
-
-            case 3: // Voltage
-                double voltage = showVoltage(buffer);
-
-            default:
-                mSbCmdResp.append(buffer);
-        }
-        if (initialCMD_tb.isChecked()) {
-            sendInitialCommands(getApplicationContext());
-        }
 
         switch (userCMDPointer) {
             case 0: // CMD: AT Z, no parse needed (resets the ELM327)
@@ -1257,47 +1098,35 @@ public class MainActivity extends AppCompatActivity implements
             case 1: // CMD: AT SP 0, no parse needed (Specify/Select Protocol)
 
             case 2: // CMD: 0105, Engine coolant temperature
-                //int ect = showEngineCoolantTemperature(buffer);
                 engineCoolantTemp = showEngineCoolantTemperature(buffer);
 
             case 3: // CMD: 010C, EngineRPM
-                //int eRPM = showEngineRPM(buffer);
                 rpm = showEngineRPM(buffer);
 
             case 4: // CMD: 010D, Vehicle Speed
-                //int vs = showVehicleSpeed(buffer);
                 speed = showVehicleSpeed(buffer);
 
             case 5: // CMD: 0131
-                //double dt = showDistanceTraveled(buffer);
                 distance = showDistanceTraveled(buffer);
 
             case 6: // CMD: 012F Fuel Level
-                //int fuel = showFuelLevel(buffer);
                 fuelLevel = showFuelLevel(buffer);
 
             case 7: // CMD: 01A6 Odometer
-                //int odo = showOdometer(buffer);
                 odometer = showOdometer(buffer);
 
             case 8: // CMD: ATRV Voltage
-                //double volt = showVoltage(buffer);
                 voltage = showVoltage(buffer);
 
             case 9: // Vin 0902
                 byte[] vinByte = buffer.getBytes();
-                //String vin = showVIN(buffer, vinByte);
                 vin = showVIN(buffer, vinByte);
 
             case 10:// CMD: B3
-                //int ignType = showIgnitionType(buffer);
-
 
             case 11:// CMD: 0142
-                //int ctrlModuleVoltage = showCtrlModuleVolt(buffer);
 
             case 12:// CMD: 015C
-                //int oilTemp = showOilTemp(buffer);
                 oilTemp = showOilTemp(buffer);
 
             case 13:// CMD: 010F
@@ -1326,10 +1155,9 @@ public class MainActivity extends AppCompatActivity implements
 
             case 21:// CMD: MODE 04
                 int clearDTC = showClearDTC(buffer);
-               // displayLog("Case 21 : cleared DTC: " + clearDTC);
 
-            case 22:// CMD:
-//                int engineLoad = showEngineLoad(buffer);
+            case 22:// CMD: engineLoad
+
 
             case 23:// CMD:0111
 
@@ -1342,7 +1170,6 @@ public class MainActivity extends AppCompatActivity implements
 
             case 26:// CMD: MODE 0300
                 int dtcStoredValues = showDTCStoredValues(buffer);
-               // displayLog("Case 26 : show DTC stored values: " + dtcStoredValues);
 
             case 27:// CMD: MODE 0700
                 int pendingDTC = showPendingDTC(buffer);
@@ -1389,10 +1216,6 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 mSbCmdResp.append(buffer);
         }
-        if (userCMD_tb.isChecked()) {
-           // sendUserCommands = new SendUserCommands(getApplicationContext(), mIOGateway);
-            sendUserCommands(getApplicationContext());
-        }
 
         switch (allCMDPointer) {
 //            case 0: // CMD: AT Z, no parse needed (resets the ELM327)
@@ -1402,164 +1225,110 @@ public class MainActivity extends AppCompatActivity implements
 
             case 2: // CMD: 0105, Engine coolant temperature
                 int ect = showEngineCoolantTemperature(buffer);
-                // displayLog("Case 2 : showEngineCoolantTemperature : " + ect);
-
 
             case 3: // CMD: 010C, EngineRPM
                 int eRPM = showEngineRPM(buffer);
-                //  displayLog("Case 3 : showEngineRPM : " + eRPM);
-
 
             case 4: // CMD: 010D, Vehicle Speed
                 int vs = showVehicleSpeed(buffer);
-                // displayLog("Case 4 : showVehicleSpeed : " + vs);
-
 
             case 5: // CMD: 0131
                 double dt = showDistanceTraveled(buffer);
-                //  displayLog("Case 5 : showDistanceTraveled : " + dt);
-
 
             case 6: // CMD: 012F Fuel Level
                 int fuel = showFuelLevel(buffer);
-                //   displayLog("Case 6 : showFuelLevel : " + fuel);
-
 
             case 7: // CMD: 01A6 Odometer
                 int odo = showOdometer(buffer);
-                //   displayLog("Case 7 : showOdometer : " + odo);
-
 
             case 8: // CMD: ATRV Voltage
                 double volt = showVoltage(buffer);
-                //  displayLog("Case 8 : showVoltage : " + volt);
 
             case 9: // Vin 0902
                 byte[] vinByte = buffer.getBytes();
                 String vin = showVIN(buffer, vinByte);
-                // displayLog("Case 9 : showVin : " + vin);
 
             case 10:// CMD: B3
 
-                // displayLog("Case 10 : show ignition type (0=Gas 1=Diesel) : " + ignType);
-
             case 11:// CMD: 0142
-
-                // displayLog("Case 11 : show CTRL module voltage: " + ctrlModuleVoltage);
 
             case 12:// CMD: 015C
                 int oilTemp = showOilTemp(buffer);
-                // displayLog("Case 12 : show oil temp: " + oilTemp);
 
             case 13:// CMD: 010F
                 int intakeTemp = showIntakeTemp(buffer);
-                // displayLog("Case 13 : show intake temp: " + intakeTemp);
 
             case 14:// CMD: 0146
                 int ambientTemp = showAmbientTemp(buffer);
-                // displayLog("Case 14 : show ambient temp: " + ambientTemp);
 
             case 15:// CMD: 0151
                 int fuelType = 0;
-                // displayLog("Case 15 : show fuel type: " + fuelType);
 
             case 16:// CMD: 015E
                 int consumptionRate = 0;
-                // displayLog("Case 16 : show fuel consumption rate: " + consumptionRate);
 
             case 17:// CMD: 0122
                 int fuelRailPressure = 0;
-                // displayLog("Case 17 : show fuel rail pressure: " + fuelRailPressure);
 
             case 18:// CMD: 0133
                 int barometricPressure = 0;
-                // displayLog("Case 18 : show barometric pressure: " + barometricPressure);
 
             case 19:// CMD: 0144
                 int airFuelRatio = 0;
-                // displayLog("Case 19 : show air/fuel ratio: " + airFuelRatio);
 
             case 20:// CMD: 014F
                 int intakeManifoldPressure = 0;
-                // displayLog("Case 20 : show intake Manifold pressure: " + intakeManifoldPressure);
 
-//            case 21:// CMD: MODE 04
-//                int clearDTC = showClearDTC(buffer);
-//                displayLog("Case 21 : cleared DTC: " + clearDTC);
+            case 21:// CMD: MODE 04
+                int clearDTC = showClearDTC(buffer);
 
             case 22:// CMD:
                 int engineLoad = showEngineLoad(buffer);
-                // displayLog("Case 22 : show engine load: " + engineLoad);
 
             case 23:// CMD:0111
 
-                // displayLog("Case 23 : show throttle position: " + throttlePosition);
-
             case 24:// CMD:011F
-
-                //displayLog("Case 24 : show engine runtime: " + engineRuntime);
 
             case 25:// CMD:0110 or 0166?
 
-                //displayLog("Case 25 : show MAF: " + massAirFlow);
-
-//            case 26:// CMD: MODE 0300
-//                int dtcStoredValues = showDTCStoredValues(buffer);
-//                displayLog("Case 26 : show DTC stored values: " + dtcStoredValues);
+            case 26:// CMD: MODE 0300
+                int dtcStoredValues = showDTCStoredValues(buffer);
+                displayLog("Case 26 : show DTC stored values: " + dtcStoredValues);
 
             case 27:// CMD: MODE 0700
                 int pendingDTC = showPendingDTC(buffer);
                 // displayLog("Case 27 : show pending DTC: " + pendingDTC);
 
-//            case 28:// CMD: MODE 0A00 // Displays previously cleared codes
-//                int permanentTroubleCodes = showPermanentTroubleCodes(buffer);
-//                //displayLog("Case 28 : show previously cleared codes: " + permanentTroubleCodes);
+            case 28:// CMD: MODE 0A00 // Displays previously cleared codes
+                int permanentTroubleCodes = showPermanentTroubleCodes(buffer);
+                //displayLog("Case 28 : show previously cleared codes: " + permanentTroubleCodes);
 
-//            case 29:// CMD: 0121
-//                int distanceMILon = showDistanceMilOn(buffer);
-//                //displayLog("Case 29 : show Distance MIL on: " + distanceMILon);
+            case 29:// CMD: 0121
 
-//            case 30:// CMD: 014E
-//                int timeSinceCodesCleared = showTimeSinceCodesCleared(buffer);
-//                //displayLog("Case 30 : show Time Since Codes Cleared: " + timeSinceCodesCleared);
+
+            case 30:// CMD: 014E
+
 
             case 31:// CMD:
-                int timingAdvance = 0;
-                //displayLog("Case 31 : show Timing Advance: " + timingAdvance);
+
 
             case 32:// CMD: 0112
-                int commandedAirStatus = 0;
-                //displayLog("Case 32 : show CMD Air Status: " + commandedAirStatus);
 
             case 33:// CMD: 0100
 
-                // displayLog("Case 33 : show supported PID: " + supportedPID);
-
             case 34:// CMD: 0101
-
-                // displayLog("Case 34 : Monitoring Status : " + monitorStatusSinceDTCcleared);
 
             case 35:// CMD: 20
 
-                // displayLog("Case 35 : show 21-40 : " + availablePID_21_40);
-
             case 36:// CMD: 4D
-
-                // displayLog("Case 36 : show Time MIL on: " + timeMILon);
 
             case 37:// CMD: 40
 
-                // displayLog("Case 37 : show 41-60: " + availablePID_41_60);
-
             case 38: // CMD: 60
-
-                // displayLog("Case 38 : show 61-80: " + availablePID_61_80);
 
             case 39: // CMD: 011C
                 String obdStandards = showObdStandardsSupported(buffer);
-
                 protocol_txt.setText(getOUTPUT() + obdStandards);
-                //displayLog("Case 39 : Show Standards: " + obdStandards);
 
             case 40: //CMD: ATDP
                 try {
@@ -1572,9 +1341,7 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 mSbCmdResp.append(buffer);
         }
-        if (allCMD_tb.isChecked()) {
-            sendAllCommands(getApplicationContext());
-        }
+
     }
 
     private String decodeResponse(String response) {
@@ -1647,8 +1414,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public String showCurrentProtocol(String buffer) {
         if (buffer.contains("ATDP")) {
-
-            response_txt.setText(currentProtocol);
+            protocol_txt.setText(buffer);
         }
         return currentProtocol;
     }
@@ -1780,8 +1546,6 @@ public class MainActivity extends AppCompatActivity implements
                 int fahrenheit = convertToFahrenheit(celsius);
                 setLastCoolantTemp(fahrenheit);
                 engineCoolantTemp = fahrenheit;
-                temperature_txt.setText("Coolant Temp: " + engineCoolantTemp);
-
                 return fahrenheit;
             } catch (IndexOutOfBoundsException | NumberFormatException e) {
                 MyLog.e(TAG, e.getMessage());
@@ -1803,18 +1567,13 @@ public class MainActivity extends AppCompatActivity implements
                 int A = Integer.valueOf(MSB, 16);
                 int B = Integer.valueOf(LSB, 16);
 
-                int tmpRPM = ((A * 256) + B) / 4;
-                lastRPM = tmpRPM;
-                rpm = lastRPM;
+                lastRPM = ((A * 256) + B) / 4;
+                setRpm(lastRPM);
 
                 if (lastRPM > maxRPM) {
                     maxRPM = lastRPM;
                 }
-                mRPM.setProgress(lastRPM);
-                mRPM.setSecondaryProgress(maxRPM);
-                String rpm = String.valueOf(tmpRPM);
-                rpm_txt.setText(rpm);
-
+                rpm = lastRPM;
                 return lastRPM;
             } catch (IndexOutOfBoundsException | NumberFormatException e) {
                 MyLog.e(TAG, e.getMessage());
@@ -1838,10 +1597,8 @@ public class MainActivity extends AppCompatActivity implements
                 if (lastSpeed > maxSpeed) {
                     maxSpeed = lastSpeed;
                 }
-                speed_txt.setText(String.valueOf(lastSpeed));
-                mSpeed.setProgress(lastSpeed);
-                mSpeed.setSecondaryProgress(maxSpeed);
-                String showSpeed = "Speed : " + lastSpeed;
+                setSpeed(lastSpeed);
+                speed = lastSpeed;
                 return lastSpeed;
             } catch (IndexOutOfBoundsException | NumberFormatException e) {
                 MyLog.e(TAG, e.getMessage());
@@ -1894,9 +1651,8 @@ public class MainActivity extends AppCompatActivity implements
         if (buffer.contains("ATRV")) {
             String volt = buffer.substring(4, 8);
             try {
+                setVoltage(Double.parseDouble(volt));
                 voltage = Double.parseDouble(volt);
-                String showVoltage = "Voltage : " + voltage;
-                voltage_txt.setText(showVoltage);
             } catch (Exception e) {
                 displayLog(e.getMessage());
             }
@@ -1923,7 +1679,6 @@ public class MainActivity extends AppCompatActivity implements
     private void clearDTC_CMD() {
         String clearDTC_codes = "04";
         SELECTED_COMMAND.add("04");
-        response_txt.setText(R.string.clear);
         try {
             USER_COMMANDS = new String[]{"04"};
             sendUserCommands(getApplicationContext());
@@ -1934,7 +1689,6 @@ public class MainActivity extends AppCompatActivity implements
     // resets the ELM327
     private void resetCMD() {
         String reset_cmd = "ATZ";
-        response_txt.setText(R.string.reset);
         try {
             USER_COMMANDS = new String[]{"ATZ"};
             sendUserCommands(getApplicationContext());
@@ -1945,7 +1699,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void speedCMD() {
         String speed = "010D";
-        response_txt.setText(R.string.speed);
         try {
             USER_COMMANDS = new String[]{"010D"};
             sendUserCommands(getApplicationContext());
@@ -1956,7 +1709,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void rpmCMD() {
         String rpm = "010C";
-        response_txt.setText(R.string.rpm);
         try {
             USER_COMMANDS = new String[]{"010C"};
             sendUserCommands(getApplicationContext());
@@ -1967,7 +1719,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void odometerCMD() {
         String odometer = "01A6";
-        response_txt.setText(R.string.odometer);
         try {
             USER_COMMANDS = new String[]{"01A6"};
             sendUserCommands(getApplicationContext());
@@ -1978,7 +1729,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void vinCMD() {
         String vin = "0902";
-        response_txt.setText(R.string.vin);
         try {
             USER_COMMANDS = new String[]{"0902"};
             sendUserCommands(getApplicationContext());
@@ -1989,7 +1739,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void voltageCMD() {
         String voltage = "ATRV";
-        response_txt.setText(R.string.voltage);
         try {
             USER_COMMANDS = new String[]{"ATRV"};
             sendUserCommands(getApplicationContext());
@@ -2000,7 +1749,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void coolantTempCMD() {
         String engineCoolantTemp = "0105";
-        response_txt.setText(R.string.coolant_temp);
         try {
             USER_COMMANDS = new String[]{"0105"};
             sendUserCommands(getApplicationContext());
@@ -2011,7 +1759,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void oilTempCMD() {
         String oilTemp = "015C";
-        response_txt.setText(R.string.oil_temp);
         try {
             USER_COMMANDS = new String[]{"015C"};
             sendUserCommands(getApplicationContext());
@@ -2022,7 +1769,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void fuelLevelCMD() {
         String fuelLevel = "012F";
-        response_txt.setText(R.string.fuel_level);
         try {
             USER_COMMANDS = new String[]{"012F"};
             sendUserCommands(getApplicationContext());
@@ -2033,7 +1779,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void engineLoadCMD() {
         String engineLoad = "0104";
-        response_txt.setText(R.string.load);
         try {
             USER_COMMANDS = new String[]{"0104"};
             sendUserCommands(getApplicationContext());
@@ -2044,7 +1789,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void pendingTroubleCodesCMD() {
         String pending_dtc = "07";
-        response_txt.setText(R.string.pending_dtc);
         try {
             USER_COMMANDS = new String[]{"07"};
             sendUserCommands(getApplicationContext());
@@ -2055,7 +1799,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void permanentTroubleCodesCMD() {
         String perm_dtc = "0A";
-        response_txt.setText(R.string.permanent_dtc);
         try {
             USER_COMMANDS = new String[]{"0A"};
             sendUserCommands(getApplicationContext());
@@ -2066,7 +1809,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void diagnosticTroubleCodesCMD() {
         String all_dtc = "03";
-        response_txt.setText(R.string.dtc);
         try {
             USER_COMMANDS = new String[]{"03"};
             sendUserCommands(getApplicationContext());

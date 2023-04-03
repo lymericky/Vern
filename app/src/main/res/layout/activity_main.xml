@@ -22,152 +22,56 @@
             android:background="@color/halo_red"
             android:gravity="center"
             android:text="@string/BT_connection_status" />
-
         <TextView
-            android:id="@+id/rpmLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rpm"
-            android:layout_below="@id/tvConnectionStatus"
-            android:textColor="@color/white"
-            android:layout_centerHorizontal="true"
-            android:labelFor="@+id/determinateBar"/>
-        <TextView
-            android:id="@+id/rpm_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/_0"
-            android:textColor="@color/white"
-            android:layout_below="@id/tvConnectionStatus"
-            android:layout_toEndOf="@+id/rpmLabel"
-            android:layout_marginStart="10dp" />
-
-        <ProgressBar
-            android:id="@+id/determinateBar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/rpmLabel"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp"
-            android:background="@color/floating_material_dark"
-            android:indeterminate="false"
-            android:indeterminateOnly="false"
-            android:maxHeight="50dp"
-            android:secondaryProgress="50"
-            android:max="8000"/>
-
-        <TextView
-            android:id="@+id/speedLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mph"
-            android:layout_below="@id/determinateBar"
-            android:textColor="@color/white"
-            android:layout_centerHorizontal="true"
-            android:labelFor="@+id/determinateBar"/>
-        <TextView
-            android:id="@+id/speed_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/_0"
-            android:textColor="@color/white"
-            android:layout_below="@id/determinateBar"
-            android:layout_toEndOf="@+id/speedLabel"
-            android:layout_marginStart="10dp" />
-
-        <ProgressBar
-            android:id="@+id/determinateBarSpeed"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/speedLabel"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp"
-            android:background="@color/floating_material_dark"
-            android:indeterminate="false"
-            android:indeterminateOnly="false"
-            android:maxHeight="50dp"
-            android:secondaryProgress="50"
-            android:max="200" />
-
-        <LinearLayout
-            android:id="@+id/selectionLayout"
+            android:id="@+id/deviceStatus_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/determinateBarSpeed"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:hint="@string/device"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:layout_below="@+id/tvConnectionStatus"
+            android:gravity="center_horizontal"/>
 
-            <TextView
-                android:id="@+id/voltage_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/_0"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="12pt"
-                tools:ignore="TextContrastCheck"
-                android:fadeScrollbars="true"
-                android:fadingEdge="vertical"
-                android:gravity="bottom"
-                android:padding="8dp"
-                android:scrollbarStyle="insideOverlay"
-                android:scrollbars="vertical"
-                />
-
-            <TextView
-                android:id="@+id/selection_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:hint="@string/coolant_temp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="12pt"
-                tools:ignore="TextContrastCheck" />
-
-            <TextView
-                android:id="@+id/deviceStatus_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:hint="@string/device_status"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="12pt"
-                tools:ignore="TextContrastCheck" />
-
-        </LinearLayout>
         <LinearLayout
             android:id="@+id/kLineLayout"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@+id/selectionLayout"
-            android:layout_alignParentEnd="true">
+            android:layout_below="@+id/deviceStatus_txt"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:hint="@string/k_line_data_only"
                 android:textColorHint="@color/halo_red"
-                android:gravity="center_horizontal"/>
+                tools:ignore="TextContrastCheck" />
 
-            <Button
-                android:id="@+id/sendCMD_btn"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/send_cmd"
-                android:layout_gravity="center_horizontal"/>
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/sendCMD_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/send_cmd"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/hideLayout_btn"/>
+
+                <ImageButton
+                    android:id="@+id/hideLayout_btn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_baseline_close_24"
+                    android:contentDescription="@string/close_gauges"
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/transparent" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/output_txt"
@@ -183,190 +87,31 @@
                 android:hint="@string/standards"
                 android:textColorHint="@color/white"
                 android:textColor="@color/green"/>
-            <TextView
-                android:id="@+id/kLine_speed_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/speed"
-                android:textColorHint="@color/white"
-                android:textColor="@color/green"/>
-            <TextView
-                android:id="@+id/kLine_rpm_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/rpm"
-                android:textColorHint="@color/white"
-                android:textColor="@color/green"/>
 
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/kLineToggleLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@+id/kLineLayout"
-            android:layout_alignParentEnd="true">
 
-            <ToggleButton
-                android:id="@+id/kLineCMD_tb"
+            <LinearLayout
+                android:id="@+id/kLineToggleLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
-            <TextView
-                android:id="@+id/kLineToggleLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/k_line"
-                android:textColor="@color/white"
-                android:layout_marginHorizontal="15dp"/>
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
+
+                <ToggleButton
+                    android:id="@+id/kLineCMD_tb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <TextView
+                    android:id="@+id/kLineToggleLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/k_line"
+                    android:textColor="@color/white"
+                    android:layout_marginHorizontal="15dp"/>
+            </LinearLayout>
         </LinearLayout>
 
-        <ToggleButton
-            android:id="@+id/initialCMD_tb"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/userCMD_tb"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="5dp"
-            tools:ignore="DuplicateSpeakableTextCheck"
-            />
 
-        <ToggleButton
-            android:id="@+id/allCMD_tb"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_above="@+id/initialCMD_tb"/>
-
-        <ToggleButton
-            android:id="@+id/userCMD_tb"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/atCMD_tb"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="5dp"
-            tools:ignore="DuplicateSpeakableTextCheck" />
-
-
-        <ToggleButton
-            android:id="@+id/atCMD_tb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="5dp"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_above="@+id/responseLayout"/>
-
-        <TextView
-            android:id="@+id/initial_lbl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:labelFor="@+id/initial_rb"
-            android:text="@string/initial"
-            android:textColor="@color/white"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="10dp"
-            android:layout_toEndOf="@+id/initialCMD_tb"
-            android:layout_alignBottom="@+id/initialCMD_tb"/>
-
-        <TextView
-            android:id="@+id/all_lbl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:labelFor="@+id/all_rb"
-            android:text="@string/all"
-            android:textColor="@color/white"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="10dp"
-            android:layout_toEndOf="@+id/allCMD_tb"
-            android:layout_alignBottom="@+id/allCMD_tb"/>
-
-        <TextView
-            android:id="@+id/user_lbl"
-            android:labelFor="@+id/userCMD_tb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/user_cmd"
-            android:textColor="@color/white"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="10dp"
-            android:layout_toEndOf="@+id/userCMD_tb"
-            android:layout_alignBottom="@+id/userCMD_tb"/>
-
-
-        <TextView
-            android:id="@+id/at_lbl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/at_cmd"
-            android:textColor="@color/white"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="10dp"
-            android:layout_toEndOf="@+id/atCMD_tb"
-            android:layout_alignBottom="@+id/atCMD_tb"/>
-
-        <LinearLayout
-            android:id="@+id/responseLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_above="@+id/buttonLayout"
-            android:gravity="center_horizontal">
-
-            <TextView
-                android:id="@+id/response_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dashes"
-                android:textSize="12pt"
-                android:textColor="@color/white"
-                android:layout_marginStart="10dp"/>
-
-            <TextView
-                android:id="@+id/responseValue_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dashes"
-                android:textSize="12pt"
-                android:textColor="@color/white"
-                android:layout_marginStart="10dp"
-                android:labelFor="@+id/response_txt"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/buttonLayout"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/background_dark"
-            android:padding="8dp"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/gauges_btn"
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="10dp"
-                android:background="@color/transparent"
-                android:contentDescription="@string/gauge"
-                android:src="@drawable/ic_baseline_speed_24"
-                tools:ignore="DuplicateSpeakableTextCheck,ImageContrastCheck,TouchTargetSizeCheck" />
-
-            <Spinner
-                android:id="@+id/cmdSelection"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:entries="@array/obd_cmd"
-                tools:ignore="TouchTargetSizeCheck" />
-
-
-        </LinearLayout>
 
     </RelativeLayout>
 

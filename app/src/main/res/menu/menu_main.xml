@@ -35,9 +35,9 @@
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/reload_btn"
-        android:title="@string/reload"
-        app:showAsAction="ifRoom|withText"
-        android:icon="@drawable/ic_baseline_refresh_24"/>
+        android:id="@+id/menu_view_kline"
+        android:title="@string/k_line"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_motorsports"/>
 
 </menu>

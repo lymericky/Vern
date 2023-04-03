@@ -1,0 +1,132 @@
+<resources>
+    <string name="app_name">Vern</string>
+    <string name="action_scan">Scan around &#8230;</string>
+
+    <string name="dialog_title_1">Paired devices</string>
+    <string name="dialog_title_2">Scan in progress &#8230;</string>
+    <string name="dialog_search_btn">Scan devices around &#8230;</string>
+    <string name="dialog_close_btn">Close</string>
+
+    <string name="menu_send_cmd">Send Default Commands</string>
+    <string name="menu_clr_screen">Clear Screen Logs</string>
+    <string name="menu_obd_mode">Toggle Simulator/OBD mode</string>
+    <string name="menu_obd_clear_code">Clear Code</string>
+
+    <string name="BT_connection_status">Connection Status</string>
+    <string name="BT_connecting">Connecting &#8230;</string>
+    <string name="BT_status_not_connected">Not connected</string>
+    <string name="BT_status_connected_to">Connected to</string>
+
+    <string name="no_command">Please enter a command</string>
+    <string name="bt_not_available">Bluetooth device is unavailable</string>
+
+    <string name="imageView">imageView</string>
+    <string name="rpm">RPM</string>
+    <string name="_0">0</string>
+    <string name="mph">mp/h</string>
+    <string name="km_h">km/h</string>
+    <string name="dashes"> ---- </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="gauge">Gauge</string>
+    <string name="close_gauges">Close Gauges</string>
+    <string name="refresh">Refresh</string>
+    <string name="reload">RELOAD</string>
+    <string name="coolant_temp">Coolant Temp: </string>
+    <string name="voltage">ATRV</string>
+    <string name="vin">0902</string>
+    <string name="fuel_level">012F</string>
+    <string name="dist_traveled">Dist Traveled:</string>
+    <string name="odometer">01A6</string>
+    <string name="selection">Selection</string>
+    <string name="obd_commands">OBD Commands</string>
+    <string name="nothing_selected">Nothing Selected</string>
+    <string name="speed">Speed</string>
+    <string name="ignition_status">Ignition Status</string>
+    <string name="ignition_type">01B3</string>
+    <string name="cm_voltage">0142</string>
+    <string name="oil_temp">015C</string>
+    <string name="intake_temp">010F</string>
+    <string name="ambient_temp">0146</string>
+    <string name="fuel_type">0151</string>
+    <string name="consumption_rate">015F</string>
+    <string name="rail_pressure">0122</string>
+    <string name="air_fuel_ratio">0144</string>
+    <string name="barometric_pressure">0122</string>
+    <string name="intake_manifold_pressure">014F</string>
+    <string name="load">0104</string>
+    <string name="throttle_position">0111</string>
+    <string name="engine_runtime">011F</string>
+    <string name="maf">0166</string>
+    <string name="all_trouble_codes">All Trouble Codes</string>
+    <string name="pending_dtc">0700</string>
+    <string name="permanent_dtc">0A00</string>
+    <string name="dtc">DTC</string>
+    <string name="distance_mil_on">0121</string>
+    <string name="time_mil_on">Time Since MIL On</string>
+    <string name="time_codes_cleared">014E</string>
+    <string name="timing_advance">010E</string>
+    <string name="cmd_equivalence_ratio">0112</string>
+    <string name="reset">Resetting…</string>
+    <string name="na">NA</string>
+    <string name="response">Response :</string>
+    <string name="supported">0100</string>
+    <string name="clear">0400</string>
+    <string name="def_cmd">DEF</string>
+    <string name="user_cmd">USER</string>
+    <string name="all_cmd">ALL</string>
+    <string name="at_cmd">AT</string>
+    <string name="activate">Activate</string>
+    <string name="initial">Initial</string>
+    <string name="all">All</string>
+    <string name="device_status">Device Status</string>
+    <string name="scanning">SCANNING</string>
+    <string name="scan_canceled">SCANNING CANCELED</string>
+    <string name="stopped">STOPPED</string>
+    <string name="output">Output</string>
+    <string name="send_cmd">Send CMD</string>
+    <string name="standards">Standards</string>
+    <string name="protocol">Protocol</string>
+    <string name="k_line_data_only">K-LINE DATA Only</string>
+    <string name="k_line">K-Line</string>
+
+    <string-array name="obd_cmd">
+        <item>CMD Selection</item>
+        <item>Reset</item>
+        <item>Speed</item>
+        <item>RPM</item>
+        <item>Odometer</item>
+        <item>VIN</item>
+        <item>Ignition Status</item>
+        <item>Voltage</item>
+        <item>Control Module Voltage</item>
+        <item>Coolant Temp</item>
+        <item>Engine Oil Temp</item>
+        <item>Intake Temp</item>
+        <item>Ambient Temp</item>
+
+        <item>Fuel Level</item>
+        <item>Fuel Type</item>
+        <item>Fuel Consumption Rate</item>
+        <item>Fuel Rail Pressure</item>
+        <item>Air/Fuel Ratio</item>
+
+        <item>Barometric Pressure</item>
+        <item>Intake Manifold Pressure</item>
+        <item>Engine Load</item>
+        <item>Throttle Position</item>
+        <item>Engine Runtime</item>
+        <item>Mass Air Flow</item>
+
+        <item>Supported Trouble Codes</item>
+        <item>Pending Trouble Codes</item>
+        <item>Permanent Trouble Codes</item>
+        <item>Diagnostic Trouble Codes</item>
+        <item>Distance MIL On</item>
+        <item>Time MIL On</item>
+        <item>Time codes cleared</item>
+
+        <item>Timing Advance</item>
+        <item>Commanded Air Status</item>
+    </string-array>
+</resources>

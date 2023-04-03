@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.denommeinc.verncodereader.gauges.GaugeViewFragment"
+    android:gravity="center_vertical|center_horizontal"
+    android:background="@color/background_dark">
+
+        <com.github.anastr.speedviewlib.SpeedView
+            android:id="@+id/speedView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:sv_maxSpeed="200"
+            app:sv_withTremble="true"
+            app:sv_unit="@string/mph"
+            app:sv_textColor="@color/background_dark"
+            app:sv_unitUnderSpeedText="true"
+            app:sv_speedTextColor="@color/white"
+            app:sv_unitTextColor="@color/white"
+            android:layout_centerHorizontal="true"
+            />
+
+        <com.github.anastr.speedviewlib.ProgressiveGauge
+            android:id="@+id/progressiveGauge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:sv_maxSpeed="8000"
+            app:sv_unit="@string/rpm"
+            app:sv_speedTextColor="@color/white"
+            app:sv_unitTextColor="@color/white"
+            app:sv_textColor="@color/white"
+            app:sv_speedTextPosition="CENTER"
+            app:sv_speedometerColor="@color/halo_red"
+            android:layout_below="@+id/speedView"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/refresh"
+            android:clickable="true"
+            android:src="@drawable/ic_baseline_refresh_24"
+            android:focusable="true"
+            android:layout_below="@+id/progressiveGauge"
+            android:layout_alignParentEnd="true"
+            android:background="@color/transparent"
+            android:layout_margin="20dp"/>
+
+
+</RelativeLayout>

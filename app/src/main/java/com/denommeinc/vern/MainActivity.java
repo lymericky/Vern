@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -52,7 +53,7 @@ import javax.script.ScriptException;
 
 import de.greenrobot.event.EventBus;
 
-
+@SuppressLint("NewApi")
 public class MainActivity extends AppCompatActivity implements
         PairedDevicesDialog.PairedDeviceDialogListener {
 
@@ -427,9 +428,6 @@ public class MainActivity extends AppCompatActivity implements
     private List<BluetoothDevice> mDeviceList;
     BluetoothDevice device;
     SendOBD2CMD sendOBD2CMD;
-   // ConvertToDecimal convertToDecimal = new ConvertToDecimal();
-    //SendUserCommands sendUserCommands;
-
 
     // Files
     FileWriter fileWriter;
@@ -447,11 +445,13 @@ public class MainActivity extends AppCompatActivity implements
 
     Spinner cmdSelection;
     ImageButton gauges_btn;
+    ImageButton hideLayout_btn;
     ToggleButton kLineCMD_tb;
 
     Button sendCMD_btn;
     // Views
     FragmentContainerView fcv;
+    LinearLayout kLineLayout;
 
     public String getOUTPUT() {
         return OUTPUT;
@@ -558,6 +558,7 @@ public class MainActivity extends AppCompatActivity implements
                         // save the connected device's name
                         mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                         deviceStatus_txt.setText("Connected : " + mConnectedDeviceName);
+                        deviceStatus_txt.setTextColor(getColor(R.color.green));
                         break;
                 }
             }
@@ -598,9 +599,13 @@ public class MainActivity extends AppCompatActivity implements
 
         kLineCMD_tb = findViewById(R.id.kLineCMD_tb);
         kLineCMD_tb.setEnabled(true);
+        kLineCMD_tb.setChecked(true);
         sendCMD_btn = findViewById(R.id.sendCMD_btn);
+        hideLayout_btn = findViewById(R.id.hideLayout_btn);
+        kLineLayout = findViewById(R.id.kLineLayout);
 
         mConnectionStatus = findViewById(R.id.tvConnectionStatus);
+        deviceStatus_txt = findViewById(R.id.deviceStatus_txt);
         protocol_txt = findViewById(R.id.output_txt);
         standards_txt = findViewById(R.id.standards_txt);
 
@@ -630,6 +635,13 @@ public class MainActivity extends AppCompatActivity implements
                 if (isChecked) {
                     sendKlineCommands(getApplicationContext());
                 }
+            }
+        });
+
+        hideLayout_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    kLineLayout.setVisibility(View.GONE);
             }
         });
     }
@@ -730,10 +742,10 @@ public class MainActivity extends AppCompatActivity implements
                 sendOBD2CMD = new SendOBD2CMD(this, "04", mIOGateway);
                 return true;
 
-            case R.id.reload_btn:
-                sendAllCommands(getApplicationContext());
-                ALL_SENT = true;
-                return true;
+            case R.id.menu_view_kline:
+                if (!kLineLayout.isInLayout()) {
+                    kLineLayout.setVisibility(View.VISIBLE);
+                }
         }
 
         return super.onOptionsItemSelected(item);
@@ -863,9 +875,11 @@ public class MainActivity extends AppCompatActivity implements
         this.device = device;
     }
 
+
     @Override
     public void onSearchAroundDevicesRequested() {
         scanAroundDevices();
+        deviceStatus_txt.setTextColor(getColor(R.color.teal_200));
         deviceStatus_txt.setText(R.string.scanning);
     }
 
@@ -873,6 +887,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onCancelScanningRequested() {
         cancelScanning();
         deviceStatus_txt.setText(R.string.scan_canceled);
+        deviceStatus_txt.setTextColor(getColor(R.color.halo_red));
     }
 
     private void sendUserCommands(Context context) {
@@ -994,6 +1009,7 @@ public class MainActivity extends AppCompatActivity implements
         if (buffer.contains("STOPPED")) {
            // Log.i("MA", String.valueOf(device) + "STOPPED");
             deviceStatus_txt.setText(R.string.stopped);
+            deviceStatus_txt.setTextColor(getColor(R.color.halo_red));
         }
         switch (kLineCMDPointer) {
             case 0:

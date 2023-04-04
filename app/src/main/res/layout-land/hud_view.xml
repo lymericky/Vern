@@ -11,19 +11,24 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:sv_speedBackgroundColor="@color/green"
         app:sv_rayColor="@color/halo_red"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginStart="60dp"
+        app:sv_unit="@string/rpm"
+        app:sv_maxSpeed="8000"/>
 
-    <com.github.anastr.speedviewlib.RaySpeedometer
-        android:id="@+id/speed_ray"
+    <com.github.anastr.speedviewlib.AwesomeSpeedometer
+        android:id="@+id/speed_awesome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:sv_rayColor="@color/halo_red"
         app:sv_speedBackgroundColor="@color/green"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rpm_ray"
+        app:layout_constraintStart_toEndOf="@+id/rpm_ray"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:sv_unit="@string/mph"
+        app:sv_maxSpeed="180"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

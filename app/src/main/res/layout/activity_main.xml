@@ -5,41 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@drawable/abstract_background">
+    android:background="@drawable/abstract_background"
+    android:id="@+id/mainLayout">
 
-    <RelativeLayout
-        android:id="@+id/mainLayout"
+    <TextView
+        android:id="@+id/tvConnectionStatus"
+        style="@style/connection_status_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-
-        <TextView
-            android:id="@+id/tvConnectionStatus"
-            style="@style/connection_status_title"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/halo_red"
-            android:gravity="center"
-            android:text="@string/BT_connection_status" />
-        <TextView
-            android:id="@+id/deviceStatus_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/device"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:layout_below="@+id/tvConnectionStatus"
-            android:gravity="center_horizontal"/>
+        android:layout_height="40dp"
+        android:background="@color/halo_red"
+        android:gravity="center"
+        android:text="@string/BT_connection_status" />
+    <TextView
+        android:id="@+id/deviceStatus_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/device"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:layout_below="@+id/tvConnectionStatus"
+        android:gravity="center_horizontal" />
 
         <LinearLayout
             android:id="@+id/kLineLayout"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@+id/deviceStatus_txt"
             android:layout_centerHorizontal="true"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:layout_below="@+id/deviceStatus_txt">
 
             <TextView
                 android:layout_width="match_parent"
@@ -125,9 +119,21 @@
             </LinearLayout>
         </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/hudLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:visibility="gone">
 
+        <include
+            layout="@layout/hud_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
-    </RelativeLayout>
+    </FrameLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_view"

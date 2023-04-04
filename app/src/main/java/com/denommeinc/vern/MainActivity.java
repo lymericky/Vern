@@ -1,6 +1,7 @@
 package com.denommeinc.vern;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -16,10 +17,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +42,8 @@ import com.denommeinc.vern.gauges.GaugeViewFragment;
 import com.denommeinc.vern.utility.MyLog;
 import com.denommeinc.vern.utility.SendOBD2CMD;
 import com.denommeinc.vern.utility.UnicodeFormatter;
+import com.github.anastr.speedviewlib.AwesomeSpeedometer;
+import com.github.anastr.speedviewlib.RaySpeedometer;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -445,12 +451,18 @@ public class MainActivity extends AppCompatActivity implements
     Spinner cmdSelection;
     ImageButton gauges_btn;
     ImageButton hideLayout_btn;
+    ImageButton close_ib;
     ToggleButton kLineCMD_tb;
 
     Button sendCMD_btn;
     // Views
     FragmentContainerView fcv;
     LinearLayout kLineLayout;
+    RelativeLayout mainLayout;
+    FrameLayout hudLayout;
+    Dialog hudDialog;
+    RaySpeedometer rpm_ray;
+    AwesomeSpeedometer speed_awesome;
 
     public String getOUTPUT() {
         return OUTPUT;
@@ -585,7 +597,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         // Fragment for Gauge
         fcv = findViewById(R.id.fragment_view);
-
+        hudDialog = new Dialog(MainActivity.this);
         // File Handler for CSVFile
         File root = Environment.getExternalStorageDirectory();
         File saveFile = new File(root, "save.csv");
@@ -604,6 +616,12 @@ public class MainActivity extends AppCompatActivity implements
         kLine_speed = findViewById(R.id.kLine_speed);
         kLine_rpm = findViewById(R.id.kLine_rpm);
 
+        speed_awesome = findViewById(R.id.speed_awesome);
+        rpm_ray = findViewById(R.id.rpm_ray);
+        close_ib = findViewById(R.id.close_ib);
+        hudLayout = findViewById(R.id.hudLayout);
+        mainLayout = findViewById(R.id.mainLayout);
+
         mConnectionStatus = findViewById(R.id.tvConnectionStatus);
         deviceStatus_txt = findViewById(R.id.deviceStatus_txt);
         protocol_txt = findViewById(R.id.output_txt);
@@ -620,6 +638,15 @@ public class MainActivity extends AppCompatActivity implements
         mSbCmdResp = new StringBuilder();
         mPartialResponse = new StringBuilder();
         mIOGateway = new BluetoothIOGateway(this, mMsgHandler);
+
+        close_ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_main);
+                hudLayout.setVisibility(View.GONE);
+                mainLayout.setVisibility(View.VISIBLE);
+            }
+        });
 
         sendCMD_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -748,10 +775,18 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 return true;
             case R.id.menu_hud_mode:
-                showGaugeViewFragment();
+                //showGaugeViewFragment();
+                showHUD();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showHUD() {
+        setContentView(R.layout.hud_view);
+        hudLayout.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -1014,6 +1049,20 @@ public class MainActivity extends AppCompatActivity implements
             deviceStatus_txt.setText(R.string.stopped);
             deviceStatus_txt.setTextColor(getColor(R.color.halo_red));
         }
+        if (buffer.contains("010D")) {
+            speed = showVehicleSpeed(buffer);
+            showVehicleSpeed(buffer);
+            setSpeed(speed);
+            kLine_speed.setText("MPH:\t" + String.valueOf(speed));
+
+        }
+        if (buffer.contains("010C")) {
+            rpm = showEngineRPM(buffer);
+            showEngineRPM(buffer);
+            setRpm(rpm);
+            kLine_rpm.setText("RPM:\t" + String.valueOf(rpm));
+        }
+
         switch (kLineCMDPointer) {
             case 0:
                 if (buffer.contains("AT SP0")) {

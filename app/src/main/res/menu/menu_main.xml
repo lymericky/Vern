@@ -40,4 +40,9 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_motorsports"/>
 
+    <item
+        android:id="@+id/menu_hud_mode"
+        android:title="@string/hud"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/gauge_icon"/>
 </menu>

@@ -603,6 +603,8 @@ public class MainActivity extends AppCompatActivity implements
         sendCMD_btn = findViewById(R.id.sendCMD_btn);
         hideLayout_btn = findViewById(R.id.hideLayout_btn);
         kLineLayout = findViewById(R.id.kLineLayout);
+        kLine_speed = findViewById(R.id.kLine_speed);
+        kLine_rpm = findViewById(R.id.kLine_rpm);
 
         mConnectionStatus = findViewById(R.id.tvConnectionStatus);
         deviceStatus_txt = findViewById(R.id.deviceStatus_txt);
@@ -746,6 +748,9 @@ public class MainActivity extends AppCompatActivity implements
                 if (!kLineLayout.isInLayout()) {
                     kLineLayout.setVisibility(View.VISIBLE);
                 }
+                return true;
+            case R.id.menu_hud_mode:
+                showGaugeViewFragment();
         }
 
         return super.onOptionsItemSelected(item);
@@ -1038,8 +1043,11 @@ public class MainActivity extends AppCompatActivity implements
             case 3:
                 if (buffer.contains("010C")) {
                     try {
-                        setRpm(showEngineRPM(buffer));
-                        kLine_rpm.setText(getRpm());
+
+                        rpm = showEngineRPM(buffer);
+                        showEngineRPM(buffer);
+                        setRpm(rpm);
+                        kLine_rpm.setText("RPM:\t" + String.valueOf(rpm));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1048,8 +1056,10 @@ public class MainActivity extends AppCompatActivity implements
             case 4:
                 if (buffer.contains("010D")) {
                     try {
-                        setSpeed(showVehicleSpeed(buffer));
-                        kLine_speed.setText(getSpeed());
+                        speed = showVehicleSpeed(buffer);
+                        showVehicleSpeed(buffer);
+                        setSpeed(speed);
+                        kLine_speed.setText("MPH:\t" + String.valueOf(speed));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

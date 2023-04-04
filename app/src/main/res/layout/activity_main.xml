@@ -39,7 +39,7 @@
             android:orientation="vertical"
             android:layout_below="@+id/deviceStatus_txt"
             android:layout_centerHorizontal="true"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="match_parent"
@@ -87,6 +87,20 @@
                 android:hint="@string/standards"
                 android:textColorHint="@color/white"
                 android:textColor="@color/green"/>
+            <TextView
+                android:id="@+id/kLine_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/speed"
+                android:textColorHint="@color/white"
+                android:textColor="@color/green"/>
+            <TextView
+                android:id="@+id/kLine_rpm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/rpm"
+                android:textColor="@color/green"
+                android:textColorHint="@color/white"/>
 
 
             <LinearLayout

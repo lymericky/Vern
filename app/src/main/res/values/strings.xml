@@ -90,6 +90,7 @@
     <string name="k_line_data_only">K-LINE DATA Only</string>
     <string name="k_line">K-Line</string>
     <string name="device">Device</string>
+    <string name="hud">HUD</string>
 
     <string-array name="obd_cmd">
         <item>CMD Selection</item>

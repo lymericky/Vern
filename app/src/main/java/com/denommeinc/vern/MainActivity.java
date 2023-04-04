@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -595,7 +594,6 @@ public class MainActivity extends AppCompatActivity implements
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         kLineCMD_tb = findViewById(R.id.kLineCMD_tb);
         kLineCMD_tb.setEnabled(true);

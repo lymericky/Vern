@@ -451,18 +451,12 @@ public class MainActivity extends AppCompatActivity implements
     Spinner cmdSelection;
     ImageButton gauges_btn;
     ImageButton hideLayout_btn;
-    ImageButton close_ib;
     ToggleButton kLineCMD_tb;
 
     Button sendCMD_btn;
     // Views
     FragmentContainerView fcv;
     LinearLayout kLineLayout;
-    RelativeLayout mainLayout;
-    FrameLayout hudLayout;
-    Dialog hudDialog;
-    RaySpeedometer rpm_ray;
-    AwesomeSpeedometer speed_awesome;
 
     public String getOUTPUT() {
         return OUTPUT;
@@ -597,7 +591,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         // Fragment for Gauge
         fcv = findViewById(R.id.fragment_view);
-        hudDialog = new Dialog(MainActivity.this);
         // File Handler for CSVFile
         File root = Environment.getExternalStorageDirectory();
         File saveFile = new File(root, "save.csv");
@@ -616,12 +609,6 @@ public class MainActivity extends AppCompatActivity implements
         kLine_speed = findViewById(R.id.kLine_speed);
         kLine_rpm = findViewById(R.id.kLine_rpm);
 
-        speed_awesome = findViewById(R.id.speed_awesome);
-        rpm_ray = findViewById(R.id.rpm_ray);
-        close_ib = findViewById(R.id.close_ib);
-        hudLayout = findViewById(R.id.hudLayout);
-        mainLayout = findViewById(R.id.mainLayout);
-
         mConnectionStatus = findViewById(R.id.tvConnectionStatus);
         deviceStatus_txt = findViewById(R.id.deviceStatus_txt);
         protocol_txt = findViewById(R.id.output_txt);
@@ -638,15 +625,6 @@ public class MainActivity extends AppCompatActivity implements
         mSbCmdResp = new StringBuilder();
         mPartialResponse = new StringBuilder();
         mIOGateway = new BluetoothIOGateway(this, mMsgHandler);
-
-        close_ib.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_main);
-                hudLayout.setVisibility(View.GONE);
-                mainLayout.setVisibility(View.VISIBLE);
-            }
-        });
 
         sendCMD_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -776,17 +754,10 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case R.id.menu_hud_mode:
                 //showGaugeViewFragment();
-                showHUD();
+
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void showHUD() {
-        setContentView(R.layout.hud_view);
-        hudLayout.setVisibility(View.VISIBLE);
-        mainLayout.setVisibility(View.GONE);
-
     }
 
     @Override

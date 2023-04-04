@@ -119,22 +119,6 @@
             </LinearLayout>
         </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/hudLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:visibility="gone">
-
-        <include
-            layout="@layout/hud_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-
-    </FrameLayout>
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_view"
         android:layout_width="match_parent"

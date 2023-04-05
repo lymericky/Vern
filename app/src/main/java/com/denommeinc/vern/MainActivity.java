@@ -457,6 +457,7 @@ public class MainActivity extends AppCompatActivity implements
     // Views
     FragmentContainerView fcv;
     LinearLayout kLineLayout;
+    AwesomeSpeedometer tempSpeedometer;
 
     public String getOUTPUT() {
         return OUTPUT;
@@ -613,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements
         deviceStatus_txt = findViewById(R.id.deviceStatus_txt);
         protocol_txt = findViewById(R.id.output_txt);
         standards_txt = findViewById(R.id.standards_txt);
-
+        tempSpeedometer = findViewById(R.id.tempSpeedometer);
         // make sure user has Bluetooth hardware
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
@@ -1618,6 +1619,7 @@ public class MainActivity extends AppCompatActivity implements
                     maxRPM = lastRPM;
                 }
                 rpm = lastRPM;
+                tempSpeedometer.speedTo(lastRPM);
                 return lastRPM;
             } catch (IndexOutOfBoundsException | NumberFormatException e) {
                 MyLog.e(TAG, e.getMessage());

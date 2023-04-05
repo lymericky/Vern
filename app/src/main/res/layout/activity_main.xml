@@ -118,6 +118,14 @@
                     android:layout_marginHorizontal="15dp"/>
             </LinearLayout>
         </LinearLayout>
+    <com.github.anastr.speedviewlib.AwesomeSpeedometer
+        android:id="@+id/tempSpeedometer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:sv_maxSpeed="8000"
+        app:sv_unit="@string/rpm"
+        android:padding="10dp"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_view"

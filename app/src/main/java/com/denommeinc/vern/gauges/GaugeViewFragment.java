@@ -79,9 +79,9 @@ public class GaugeViewFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_gauge_view, container, false);
         speedView = view.findViewById(R.id.speedView);
-        speedView.speedTo(MainActivity.getLastSpeed());
+
         progressiveGauge = view.findViewById(R.id.progressiveGauge);
-        progressiveGauge.speedTo(MainActivity.getLastRPM());
+
         fab = view.findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

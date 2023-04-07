@@ -91,6 +91,9 @@
     <string name="k_line">K-Line</string>
     <string name="device">Device</string>
     <string name="hud">HUD</string>
+    <string name="set">SET</string>
+    <string name="basic_cmds">Basic</string>
+    <string name="set_protocol">Set Protocol</string>
 
     <string-array name="obd_cmd">
         <item>CMD Selection</item>
@@ -130,5 +133,13 @@
 
         <item>Timing Advance</item>
         <item>Commanded Air Status</item>
+    </string-array>
+
+    <string-array name="baud_rates">
+        <item>IB10</item>
+        <item>IB12</item>
+        <item>IB15</item>
+        <item>IB48</item>
+        <item>IB96</item>
     </string-array>
 </resources>

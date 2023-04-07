@@ -17,7 +17,7 @@ public class PIDConstants {
             FUEL_TANK_INPUT = "012F", // %
             ODOMETER = "01A6", // km
             VOLTAGE = "AT RV",
-            PROTOCOL = "AT DP",
+            PROTOCOL = "AT DP", // Display Used Protocol
             RESET = "AT Z", // "AT Z"
             CLEAR_DTC_CODES = "04",
             PIDS_SUPPORTED20 = "0100",
@@ -41,8 +41,9 @@ public class PIDConstants {
             FUEL_SYSTEM_STATUS = "0103",
             SHOW_DTC_CODES = "03",
             VIN = "0902",
-            FUEL_PRESSURE = "010A"
-
+            FUEL_PRESSURE = "010A",
+            PP_14230_KWP4 = "AT TP A4",
+            PP_14230_KWP5_FAST = "AT TP A5"
     ;
 
 

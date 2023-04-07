@@ -2,7 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:ignore="AlwaysShowAction">
 
     <item
         android:id="@+id/action_scan"
@@ -37,12 +38,19 @@
     <item
         android:id="@+id/menu_view_kline"
         android:title="@string/k_line"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:icon="@drawable/ic_motorsports"/>
 
     <item
         android:id="@+id/menu_hud_mode"
         android:title="@string/hud"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:icon="@drawable/gauge_icon"/>
+
+    <item
+        android:id="@+id/menu_refresh"
+        android:title="@string/refresh"
+        android:titleCondensed="@string/refresh"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_baseline_refresh_24" />
 </menu>

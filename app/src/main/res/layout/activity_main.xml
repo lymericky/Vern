@@ -28,12 +28,13 @@
 
         <LinearLayout
             android:id="@+id/kLineLayout"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_centerHorizontal="true"
             android:visibility="visible"
-            android:layout_below="@+id/deviceStatus_txt">
+            android:layout_below="@+id/deviceStatus_txt"
+            android:layout_marginHorizontal="10dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -64,6 +65,15 @@
                     android:contentDescription="@string/close_gauges"
                     android:layout_alignParentEnd="true"
                     android:background="@color/transparent" />
+
+                <Button
+                    android:id="@+id/set_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_protocol"
+                    android:layout_below="@+id/hideLayout_btn"
+                    android:layout_alignParentEnd="true"
+                    />
 
             </RelativeLayout>
 
@@ -96,27 +106,93 @@
                 android:textColor="@color/green"
                 android:textColorHint="@color/white"/>
 
-
             <LinearLayout
-                android:id="@+id/kLineToggleLayout"
-                android:layout_width="wrap_content"
+                android:id="@+id/toggleBtnLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="center_horizontal">
+                android:gravity="center_horizontal">
 
-                <ToggleButton
-                    android:id="@+id/kLineCMD_tb"
+                <LinearLayout
+                    android:id="@+id/kLineToggleLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    />
-                <TextView
-                    android:id="@+id/kLineToggleLabel"
+                    android:orientation="vertical">
+
+                    <ToggleButton
+                        android:id="@+id/kLineCMD_tb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/kLineToggleLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/k_line"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/atToggleLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/k_line"
-                    android:textColor="@color/white"
-                    android:layout_marginHorizontal="15dp"/>
+                    android:orientation="vertical"
+                    android:layout_marginStart="5dp">
+
+                    <ToggleButton
+                        android:id="@+id/atCMD_tb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/atLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/at_cmd"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/basicToggleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="5dp">
+
+                    <ToggleButton
+                        android:id="@+id/basicCMD_tb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/basicLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/basic_cmds"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/allToggleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="5dp">
+
+                    <ToggleButton
+                        android:id="@+id/allCMD_tb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/allLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/all_cmd"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
             </LinearLayout>
+
+
         </LinearLayout>
     <com.github.anastr.speedviewlib.AwesomeSpeedometer
         android:id="@+id/tempSpeedometer"

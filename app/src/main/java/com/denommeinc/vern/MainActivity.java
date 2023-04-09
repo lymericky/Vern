@@ -45,6 +45,7 @@ import com.github.anastr.speedviewlib.AwesomeSpeedometer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -194,7 +195,9 @@ public class MainActivity extends AppCompatActivity implements
             "010D", // Speed // case 4
             "AT RV", // Voltage // case 8
             "011C", // Display Standards
-            "AT DP" //Display Protocol
+            "AT DP", //Display Protocol
+            "0104",  // load
+            "012F"
     };
 
     public static final String[] KLINE_COMMANDS = {
@@ -262,6 +265,10 @@ public class MainActivity extends AppCompatActivity implements
     TextView standards_txt;
     TextView kLine_speed;
     TextView kLine_rpm;
+    TextView voltage_txt;
+    TextView coolant_txt;
+    TextView fuelLevel_txt;
+    TextView load_txt;
     ImageButton gauges_btn;
     ImageButton hideLayout_btn;
     ToggleButton kLineCMD_tb;
@@ -308,10 +315,6 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
-        kLineCMD_tb = findViewById(R.id.kLineCMD_tb);
-//        kLineCMD_tb.setEnabled(true);
-//        kLineCMD_tb.setChecked(true);
-        atCMD_tb = findViewById(R.id.atCMD_tb);
         allCMD_tb = findViewById(R.id.allCMD_tb);
         basicCMD_tb = findViewById(R.id.basicCMD_tb);
         basicCMD_tb.setChecked(true);
@@ -320,6 +323,10 @@ public class MainActivity extends AppCompatActivity implements
         kLineLayout = findViewById(R.id.kLineLayout);
         kLine_speed = findViewById(R.id.kLine_speed);
         kLine_rpm = findViewById(R.id.kLine_rpm);
+        voltage_txt = findViewById(R.id.voltage_txt);
+        coolant_txt = findViewById(R.id.coolant_txt);
+        fuelLevel_txt = findViewById(R.id.fuel_txt);
+        load_txt = findViewById(R.id.load_txt);
         cmd_btn = findViewById(R.id.set_btn);
 
         mConnectionStatus = findViewById(R.id.tvConnectionStatus);
@@ -353,16 +360,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 sendUserCommands(getApplicationContext());
-                sendKlineCommands(getApplicationContext());
-            }
-        });
-
-        atCMD_tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    sendATCommands(getApplicationContext());
-                }
+                sendAllCommands(getApplicationContext());
             }
         });
 
@@ -380,15 +378,6 @@ public class MainActivity extends AppCompatActivity implements
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     sendBasicCommands(getApplicationContext());
-                }
-            }
-        });
-
-        kLineCMD_tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    sendKlineCommands(getApplicationContext());
                 }
             }
         });
@@ -880,63 +869,6 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void sendATCommands(Context context) {
-        AT_SENT = true;
-        if (inSimulatorMode) {
-            displayMessage("You are in simulator mode!");
-            return;
-        }
-        if (atCMDPointer < 0) {
-            atCMDPointer = -1;
-        }
-
-        if (atCMDPointer >= AT_COMMANDS.length - 1) {
-            atCMDPointer = -1;
-        }
-        atCMDPointer++;
-
-        for (int i = 0; i < AT_COMMANDS.length; i++) {
-            String cmd = AT_COMMANDS[i];
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendOBD2CMD = new SendOBD2CMD(context, AT_COMMANDS[atCMDPointer], mIOGateway);
-                            displayLog(cmd);
-                        }
-                    });
-                }
-            }, 1000);
-
-        }
-
-    }
-
-    private void sendKlineCommands(Context context) {
-        if (inSimulatorMode) {
-            displayMessage("You are in simulator mode!");
-            return;
-        }
-        if (kLineCMDPointer < 0) {
-            kLineCMDPointer = -1;
-        }
-
-        if (kLineCMDPointer >= KLINE_COMMANDS.length - 1) {
-            kLineCMDPointer = -1;
-        }
-        kLineCMDPointer++;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                sendOBD2CMD = new SendOBD2CMD(context, KLINE_COMMANDS[kLineCMDPointer], mIOGateway);
-            }
-        });
-        Log.i("KLINE", String.valueOf(kLineCMDPointer));
-    }
     private void sendBasicCommands(Context context) {
         INITIAL_SENT = true;
         if (inSimulatorMode) {
@@ -962,379 +894,80 @@ public class MainActivity extends AppCompatActivity implements
     @SuppressLint("SetTextI18n")
     private void parseResponse(String buffer) throws ScriptException {
         displayLog("RAW BUFFER Response : " + buffer);
+        mSbCmdResp.append(buffer);
         if (buffer.contains("STOPPED")) {
            // Log.i("MA", String.valueOf(device) + "STOPPED");
             deviceStatus_txt.setText(R.string.stopped);
             deviceStatus_txt.setTextColor(getColor(R.color.halo_red));
+        } else {
+            deviceStatus_txt.setText("CONNECTED");
+            deviceStatus_txt.setTextColor(getColor(R.color.green));
         }
-        else if (buffer.contains("010D")) {
+
+        if (buffer.contains("010D")) {
             speed = showVehicleSpeed(buffer);
-            showVehicleSpeed(buffer);
             kLine_speed.setText("MPH:\t" + String.valueOf(speed));
         }
+
         else if (buffer.contains("010C")) {
             rpm = showEngineRPM(buffer);
-            showEngineRPM(buffer);
             kLine_rpm.setText("RPM:\t" + String.valueOf(rpm));
         }
+
         else if (buffer.contains("ATTP")) {
             displayLog("ATTP RESPONSE:\t" + buffer);
         }
+
         else if (buffer.contains("ATDP")) {
-            displayLog("ATDP:\t" + buffer);
             currentProtocol = showCurrentProtocol(buffer);
-            showCurrentProtocol(buffer);
             displayLog("---CURRENT PROTOCOL---\t" + currentProtocol);
             protocol_txt.setText("Protocol:\t" + buffer);
         }
+
         else if (buffer.contains("ATRV")) {
             try {
                 voltage = showVoltage(buffer);
-                showVoltage(buffer);
-                displayLog("Voltage:\t" + voltage);
+                voltage_txt.setText("Voltage:\t" + String.valueOf(voltage));
             } catch (Exception e) {
                 displayErrorLog(e.getMessage());
             }
         }
+
         else if (buffer.contains("0105")) {
             try {
                 engineCoolantTemp = showEngineCoolantTemperature(buffer);
-                showEngineCoolantTemperature(buffer);
+                coolant_txt.setText("Coolant Temp:\t" + String.valueOf(engineCoolantTemp));
             } catch (Exception e) {
-                displayErrorLog(e.getMessage());
+                displayErrorLog("Coolant Error\t" + e.getMessage());
             }
+
         } else if (buffer.contains("011C")) {
             try {
                 obdStandards = showObdStandardsSupported(buffer);
-                showObdStandardsSupported(buffer);
-                standards_txt.setText(obdStandards);
+                standards_txt.setText("Standards:\t" + obdStandards);
             } catch (Exception e) {
-                displayErrorLog(e.getMessage());
+                displayErrorLog("OBD Standards Error\t" + e.getMessage());
+            }
+
+        } else if (buffer.contains("0104")) {
+            try {
+                engineLoad = showEngineLoad(buffer);
+                load_txt.setText("Engine Load:\t" + String.valueOf(engineLoad));
+            } catch (Exception e) {
+                displayErrorLog("Engine Load Error\t" + e.getMessage());
+            }
+
+        } else if (buffer.contains("012F")) {
+            try {
+                fuelLevel = showFuelLevel(buffer);
+                fuelLevel_txt.setText("Fuel Level:\t" + String.valueOf(fuelLevel));
+            } catch (Exception e) {
+                displayErrorLog("Fuel Error\t" + e.getMessage());
             }
         }
-
         if (basicCMD_tb.isChecked()) {
             sendBasicCommands(getApplicationContext());
         }
-
-        switch (kLineCMDPointer) {
-            case 0:
-//                if (buffer.contains("ATSP0")) {
-//                    currentProtocol = showCurrentProtocol(buffer);
-//                    showCurrentProtocol(buffer);
-//                    displayLog("Protocol : \t" + currentProtocol);
-//                }
-
-            case 1:
-//                if (buffer.contains("ATRV")) {
-//                    try {
-//                        voltage = showVoltage(buffer);
-//                        showVoltage(buffer);
-//                        displayLog("Voltage:\t" + voltage);
-//                    } catch (Exception e) {
-//                        displayErrorLog(e.getMessage());
-//                    }
-//                }
-
-            case 2:
-//                if (buffer.contains("0105")) {
-//                    try {
-//                        engineCoolantTemp = showEngineCoolantTemperature(buffer);
-//                        showEngineCoolantTemperature(buffer);
-//                    } catch (Exception e) {
-//                        displayErrorLog(e.getMessage());
-//                    }
-//                }
-
-            case 3:
-//                if (buffer.contains("010C")) {
-//                    try {
-//                        rpm = showEngineRPM(buffer);
-//                        showEngineRPM(buffer);
-//                        kLine_rpm.setText("RPM:\t" + String.valueOf(rpm));
-//                    } catch (Exception e) {
-//                        displayErrorLog(e.getMessage());
-//                    }
-//                }
-
-            case 4:
-//                if (buffer.contains("010D")) {
-//                    try {
-//                        speed = showVehicleSpeed(buffer);
-//                        showVehicleSpeed(buffer);
-//                        kLine_speed.setText("MPH:\t" + String.valueOf(speed));
-//                    } catch (Exception e) {
-//                        displayErrorLog(e.getMessage());
-//                    }
-//                }
-
-            case 5:
-//                if (buffer.contains("011C")) {
-//                    try {
-//                        obdStandards = showObdStandardsSupported(buffer);
-//                        showObdStandardsSupported(buffer);
-//                        standards_txt.setText(obdStandards);
-//                    } catch (Exception e) {
-//                        displayErrorLog(e.getMessage());
-//                    }
-//                }
-
-            case 6:
-//                if (buffer.contains("ATDP")) {
-//                    try {
-//                        currentProtocol = showCurrentProtocol(buffer);
-//                        showCurrentProtocol(buffer);
-//                        protocol_txt.setText(buffer);
-//                    } catch (Exception e) {
-//                        displayErrorLog(e.getMessage());
-//                    }
-//                }
-
-            default:
-                mSbCmdResp.append(buffer);
-
-        }
-        if (kLineCMD_tb.isChecked()) {
-            sendKlineCommands(getApplicationContext());
-        }
-
-        switch (atCMDPointer) {
-            case 0: //AT Z,no parse needed (resets the ELM327)
-//                if (buffer.contains("ATZ")) {
-//                    //displayLog("AT Z : Resetting");
-//                }
-            case 1: // AT SP 0 no parse needed (Specify/Select Protocol)
-//                if (buffer.contains("ATSP")) {
-//                    //displayLog("AT SP : Protocol 0 Requested");
-//                }
-
-            case 2: // AT DP Display Current Protocol
-//                if (buffer.contains("ATDP")) {
-//                    currentProtocol = showCurrentProtocol(buffer);
-//                    displayLog("AT DP : Protocol : " + currentProtocol);
-//                }
-            case 3: // AT DP N Display Current Protocol Number
-//                if (buffer.contains("ATDPN")) {
-//                    String protocolNumber = showCurrentProtocol(buffer);
-//                    displayLog("Protocol Num:\t" + protocolNumber);
-//                }
-            case 4: // AT RV Voltage
-//                if (buffer.contains("ATRV")) {
-//                    voltage = showVoltage(buffer);
-//                    showVoltage(buffer);
-//                }
-
-            default:
-                mSbCmdResp.append(buffer);
-        }
-
-        switch (userCMDPointer) {
-            case 0: // CMD: AT Z, no parse needed (resets the ELM327)
-
-            case 1: // CMD: AT SP 0, no parse needed (Specify/Select Protocol)
-
-            case 2: // CMD: 0105, Engine coolant temperature
- //               engineCoolantTemp = showEngineCoolantTemperature(buffer);
-
-            case 3: // CMD: 010C, EngineRPM
-//                rpm = showEngineRPM(buffer);
-
-            case 4: // CMD: 010D, Vehicle Speed
-//                speed = showVehicleSpeed(buffer);
-
-            case 5: // CMD: 0131
-//                distance = showDistanceTraveled(buffer);
-
-            case 6: // CMD: 012F Fuel Level
-//                fuelLevel = showFuelLevel(buffer);
-
-            case 7: // CMD: 01A6 Odometer
-//                odometer = showOdometer(buffer);
-
-            case 8: // CMD: ATRV Voltage
-//                voltage = showVoltage(buffer);
-
-            case 9: // Vin 0902
-//                byte[] vinByte = buffer.getBytes();
-//                vin = showVIN(buffer, vinByte);
-
-            case 10:// CMD: B3
-            case 11:// CMD: 0142
-            case 12:// CMD: 015C
-//                oilTemp = showOilTemp(buffer);
-
-            case 13:// CMD: 010F
-//                intakeTemp = showIntakeTemp(buffer);
-
-            case 14:// CMD: 0146
-//                ambientTemp = showAmbientTemp(buffer);
-
-            case 15:// CMD: 0151
-//                fuelType = 0;
-
-            case 16:// CMD: 015E
-//                consumptionRate = 0;
-
-            case 17:// CMD: 0122
-//                fuelRailPressure = 0;
-
-            case 18:// CMD: 0133
-//                barometricPressure = 0;
-
-            case 19:// CMD: 0144
-//                airFuelRatio = 0;
-
-            case 20:// CMD: 014F
-//                intakeManifoldPressure = 0;
-
-            case 21:// CMD: MODE 04
-//                int clearDTC = showClearDTC(buffer);
-
-            case 22:// CMD: engineLoad
-            case 23:// CMD:0111
-            case 24:// CMD:011F
-            case 25:// CMD:0110 or 0166?
-            case 26:// CMD: MODE 0300
-//                int dtcStoredValues = showDTCStoredValues(buffer);
-
-            case 27:// CMD: MODE 0700
-//                int pendingDTC = showPendingDTC(buffer);
-
-            case 28:// CMD: MODE 0A00 // Displays previously cleared codes
-//                int permanentTroubleCodes = showPermanentTroubleCodes(buffer);
-
-            case 29:// CMD: 0121
-            case 30:// CMD: 014E
-            case 31:// CMD:
-//                timingAdvance = 0;
-
-            case 32:// CMD: 0112
-//                commandedAirStatus = 0;
-
-            case 33:// CMD: 0100
-            case 34:// CMD: 0101
-            case 35:// CMD: 20
-            case 36:// CMD: 4D
-            case 37:// CMD: 40
-            case 38: // CMD: 60
-            case 39: // CMD: 011C
-//                obdStandards = showObdStandardsSupported(buffer);
-
-            case 40: //CMD: ATDP
-//                currentProtocol = showCurrentProtocol(buffer);
-
-            default:
-                mSbCmdResp.append(buffer);
-        }
-
-        switch (allCMDPointer) {
-//            case 0: // CMD: AT Z, no parse needed (resets the ELM327)
-//                mSbCmdResp.append(buffer);
-//            case "": // CMD: AT SP 0, no parse needed (Specify/Select Protocol)
-
-
-            case 2: // CMD: 0105, Engine coolant temperature
-//                engineCoolantTemp = showEngineCoolantTemperature(buffer);
-
-            case 3: // CMD: 010C, EngineRPM
-//                rpm = showEngineRPM(buffer);
-
-            case 4: // CMD: 010D, Vehicle Speed
-//                speed = showVehicleSpeed(buffer);
-
-            case 5: // CMD: 0131
-//                distance = showDistanceTraveled(buffer);
-
-            case 6: // CMD: 012F Fuel Level
-//                fuelLevel = showFuelLevel(buffer);
-
-            case 7: // CMD: 01A6 Odometer
-//                odometer = showOdometer(buffer);
-
-            case 8: // CMD: ATRV Voltage
-//                voltage = showVoltage(buffer);
-
-            case 9: // Vin 0902
-//                byte[] vinByte = buffer.getBytes();
-//                vin = showVIN(buffer, vinByte);
-
-            case 10:// CMD: B3
-            case 11:// CMD: 0142
-            case 12:// CMD: 015C
-//                oilTemp = showOilTemp(buffer);
-
-            case 13:// CMD: 010F
-//                intakeTemp = showIntakeTemp(buffer);
-
-            case 14:// CMD: 0146
-//                ambientTemp = showAmbientTemp(buffer);
-
-            case 15:// CMD: 0151
-//                fuelType = 0;
-
-            case 16:// CMD: 015E
-//                consumptionRate = 0;
-
-            case 17:// CMD: 0122
-//                fuelRailPressure = 0;
-
-            case 18:// CMD: 0133
-//                barometricPressure = 0;
-
-            case 19:// CMD: 0144
-//                airFuelRatio = 0;
-
-            case 20:// CMD: 014F
-//                intakeManifoldPressure = 0;
-
-            case 21:// CMD: MODE 04
-                int clearDTC = showClearDTC(buffer);
-
-            case 22:// CMD:
-//                engineLoad = showEngineLoad(buffer);
-
-            case 23:// CMD:0111
-            case 24:// CMD:011F
-            case 25:// CMD:0110 or 0166?
-
-            case 26:// CMD: MODE 0300
-//                int dtcStoredValues = showDTCStoredValues(buffer);
-//                displayLog("Case 26 : show DTC stored values: " + dtcStoredValues);
-
-            case 27:// CMD: MODE 0700
-//                int pendingDTC = showPendingDTC(buffer);
-                // displayLog("Case 27 : show pending DTC: " + pendingDTC);
-
-            case 28:// CMD: MODE 0A00 // Displays previously cleared codes
-//                int permanentTroubleCodes = showPermanentTroubleCodes(buffer);
-                //displayLog("Case 28 : show previously cleared codes: " + permanentTroubleCodes);
-
-            case 29:// CMD: 0121
-            case 30:// CMD: 014E
-            case 31:// CMD:
-            case 32:// CMD: 0112
-            case 33:// CMD: 0100
-            case 34:// CMD: 0101
-            case 35:// CMD: 20
-            case 36:// CMD: 4D
-            case 37:// CMD: 40
-            case 38: // CMD: 60
-            case 39: // CMD: 011C
-//                obdStandards = showObdStandardsSupported(buffer);
-//                protocol_txt.setText(getOUTPUT() + obdStandards);
-
-            case 40: //CMD: ATDP
-                try {
-//                    currentProtocol = showCurrentProtocol(buffer);
-                } catch (Exception e) {
-                    displayErrorLog(e.getMessage());
-                }
-
-
-            default:
-                mSbCmdResp.append(buffer);
-        }
-
     }
 
     private String decodeResponse(String response) {
@@ -1436,7 +1069,17 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public int showEngineLoad(String buffer) {
-        return -1;
+        String tmp = buffer;
+        int load = 0;
+        try {
+            tmp = decodeResponse(buffer);
+            load = convertToDecimal(tmp);
+            engineLoad = load;
+            displayLog("LOAD\t" + engineLoad);
+        } catch (Exception e) {
+            displayErrorLog("---Engine Load Error---" + e.getMessage());
+        }
+        return engineLoad;
     }
 
     public int showClearDTC(String buffer) {
@@ -1511,13 +1154,6 @@ public class MainActivity extends AppCompatActivity implements
                 String fuel = buf.substring(0, 2);
                 int A = Integer.valueOf(fuel, 16);
                 int fuelLevelInput = (A*100)/255;
-                if (fuelLevelInput > 0) {
-                    try {
-                        //displayLog("Fuel : " + fuelLevelInput);
-                    } catch (Exception e) {
-                        displayErrorLog(e.getMessage());
-                    }
-                }
                 fuelLevel = (A*100)/255;
                 return (A*100)/255;
             } catch (IndexOutOfBoundsException | NumberFormatException e) {
@@ -1534,7 +1170,7 @@ public class MainActivity extends AppCompatActivity implements
         if (buf.contains("4105")) {
             buf = decodeResponse(buf);
             try {
-                //displayLog("Coolant Temp RAW : " + buffer);
+                displayLog("Coolant Temp RAW : " + buffer);
                 int celsius = convertToDecimal(buf);
                 int fahrenheit = convertToFahrenheit(celsius);
                 lastCoolantTemp = fahrenheit;

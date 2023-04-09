@@ -33,9 +33,9 @@
     <string name="refresh">Refresh</string>
     <string name="reload">RELOAD</string>
     <string name="coolant_temp">Coolant Temp: </string>
-    <string name="voltage">ATRV</string>
+    <string name="voltage">Voltage</string>
     <string name="vin">0902</string>
-    <string name="fuel_level">012F</string>
+    <string name="fuel_level">Fuel Level</string>
     <string name="dist_traveled">Dist Traveled:</string>
     <string name="odometer">01A6</string>
     <string name="selection">Selection</string>
@@ -54,7 +54,7 @@
     <string name="air_fuel_ratio">0144</string>
     <string name="barometric_pressure">0122</string>
     <string name="intake_manifold_pressure">014F</string>
-    <string name="load">0104</string>
+    <string name="load">LOAD</string>
     <string name="throttle_position">0111</string>
     <string name="engine_runtime">011F</string>
     <string name="maf">0166</string>

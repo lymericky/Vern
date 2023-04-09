@@ -36,14 +36,6 @@
             android:layout_below="@+id/deviceStatus_txt"
             android:layout_marginHorizontal="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:hint="@string/k_line_data_only"
-                android:textColorHint="@color/halo_red"
-                tools:ignore="TextContrastCheck" />
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,41 +62,91 @@
                     android:id="@+id/set_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/set_protocol"
+                    android:text="@string/selection"
                     android:layout_below="@+id/hideLayout_btn"
                     android:layout_alignParentEnd="true"
                     />
 
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/output_txt"
+            <LinearLayout
+                android:id="@+id/textHolderLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/protocol"
-                android:textColor="@color/green"
-                android:textColorHint="@color/white"/>
-            <TextView
-                android:id="@+id/standards_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/standards"
-                android:textColorHint="@color/white"
-                android:textColor="@color/green"/>
-            <TextView
-                android:id="@+id/kLine_speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/speed"
-                android:textColorHint="@color/white"
-                android:textColor="@color/green"/>
-            <TextView
-                android:id="@+id/kLine_rpm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/rpm"
-                android:textColor="@color/green"
-                android:textColorHint="@color/white"/>
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/textLayout1"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/output_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/protocol"
+                        android:textColor="@color/green"
+                        android:textColorHint="@color/white"/>
+
+                    <TextView
+                        android:id="@+id/standards_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/standards"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/green"/>
+                    <TextView
+                        android:id="@+id/kLine_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/speed"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/green"/>
+                    <TextView
+                        android:id="@+id/kLine_rpm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/rpm"
+                        android:textColor="@color/green"
+                        android:textColorHint="@color/white"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/textLayout2"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/voltage_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/voltage"
+                        android:textColor="@color/green"
+                        android:textColorHint="@color/white"/>
+                    <TextView
+                        android:id="@+id/coolant_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/coolant_temp"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/green"/>
+                    <TextView
+                        android:id="@+id/fuel_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/fuel_level"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/green"/>
+                    <TextView
+                        android:id="@+id/load_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/load"
+                        android:textColor="@color/green"
+                        android:textColorHint="@color/white"/>
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/toggleBtnLayout"
@@ -113,44 +155,6 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal">
 
-                <LinearLayout
-                    android:id="@+id/kLineToggleLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <ToggleButton
-                        android:id="@+id/kLineCMD_tb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:id="@+id/kLineToggleLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/k_line"
-                        android:textColor="@color/white"
-                        android:layout_gravity="center_horizontal"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/atToggleLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="5dp">
-
-                    <ToggleButton
-                        android:id="@+id/atCMD_tb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:id="@+id/atLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/at_cmd"
-                        android:textColor="@color/white"
-                        android:layout_gravity="center" />
-                </LinearLayout>
                 <LinearLayout
                     android:id="@+id/basicToggleLayout"
                     android:layout_width="wrap_content"
@@ -170,6 +174,7 @@
                         android:textColor="@color/white"
                         android:layout_gravity="center" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/allToggleLayout"
                     android:layout_width="wrap_content"
@@ -192,8 +197,8 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
+
     <com.github.anastr.speedviewlib.AwesomeSpeedometer
         android:id="@+id/tempSpeedometer"
         android:layout_width="match_parent"

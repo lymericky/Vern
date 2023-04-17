@@ -1,4 +1,4 @@
-package com.denommeinc.vern.dialog;
+package com.denommeinc.vern.gui;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;

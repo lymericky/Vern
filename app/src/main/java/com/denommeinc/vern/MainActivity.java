@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,37 +19,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.denommeinc.vern.adapter.PairedListAdapter;
-import com.denommeinc.vern.dialog.PairedDevicesDialog;
+import com.denommeinc.vern.gui.GaugeDialog;
+import com.denommeinc.vern.gui.PairedDevicesDialog;
 import com.denommeinc.vern.elm327.BluetoothIOGateway;
 import com.denommeinc.vern.elm327.DeviceBroadcastReceiver;
-import com.denommeinc.vern.gauges.GaugeViewFragment;
-import com.denommeinc.vern.utility.MyLog;
+import com.denommeinc.vern.gui.RawDataDialog;
 import com.denommeinc.vern.utility.SendOBD2CMD;
 import com.denommeinc.vern.utility.UnicodeFormatter;
+import com.denommeinc.vern.live_data.LiveDataViewModel;
 import com.github.anastr.speedviewlib.AwesomeSpeedometer;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.script.ScriptException;
 
@@ -62,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_DIALOG = "K-LINE";
+    private static final String TAG_DIALOG_RAW = "RAW-DATA";
+    private static final String TAG_GAUGE = "GAUGE";
     private static final String TAG_ERROR = "K-Line Error";
     private static final String NO_BLUETOOTH = "Oops, your device doesn't support bluetooth";
 
@@ -76,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public static String vin = " ";
     public static String currentProtocol = " ";
+    public String selection = null;
+    public static StringBuffer BUFFER = null;
 
     public static void setCONNECTED(boolean CONNECTED) {
         MainActivity.CONNECTED = CONNECTED;
@@ -86,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements
     public static boolean INITIAL_SENT = false;
     public static boolean ALL_SENT = false;
     public static boolean USER_SENT = false;
+    public static boolean REPEAT_CMD = false;
 
     // Responses
     public static int rpm;
@@ -170,39 +180,46 @@ public class MainActivity extends AppCompatActivity implements
             "0160",
             "011C"
     };
-    private static final String SET_KLINE_PROTOCOL_CMD = "AT TP5" ;// ISO 14230-4 KWP fast
-
-    private static final String DISPLAY_PROTOCOL_CMD = "AT DP";
-
-    private static final String MONITOR_ALL = "AT MA";
 
     // Single Use Commands
     private static final String[] AT_COMMANDS = {
-            "AT Z", // case 0 // Reset
-            "AT SP 0", // case 1 Automatically Search/Select Protocol
+           // "AT Z", // case 0 // Reset
+           // "AT SP 0", // case 1 Automatically Search/Select Protocol
             //"AT H1", // Enable Header Bytes
             "AT DP", // Display Current Protocol
             "AT DP N", // Display Current Protocol by Number
             "AT RV" // Voltage
     };
 
+    private static final String[] INITIAL_CMDS = {
+            "AT TP A3",
+            "AT DP"
+    };
+
     //Basic Commands
     private static final String[] BASIC_COMMANDS = {
-            "AT TP5", // case 1 Automatically Search/Select Protocol
+            //"AT SP3", // case 1 Automatically Search/Select Protocol
             //"AT Z", // Reset
+            //"AT TP3",
             "0105", // Engine Coolant Temp // case 2
             "010C", // RPM // case 3
             "010D", // Speed // case 4
             "AT RV", // Voltage // case 8
             "011C", // Display Standards
-            "AT DP", //Display Protocol
+            //"AT DP", //Display Protocol
             "0104",  // load
-            "012F"
+           // "012F" // fuel
+            "0100" // PID Supported
     };
 
+    // "AT PPS" = Display Summary of Supported PP
+    // "AT MA" = Monitor All
+    // "AT TP5" = try protocol 5 ISO 14230-4 fast
+
     public static final String[] KLINE_COMMANDS = {
- //           "AT TP5", // case 0 Automatically Select Protocol 5 (14230-4 KWP Fast)
- //           "AT RV", // Voltage // case 1
+ //           "AT TP5", // case 0 Automatically Try Protocol 5 (14230-4 KWP Fast)
+ //           "AT TP3", // Try Protocol 3 (9141)
+            "AT RV", // Voltage // case 1
             "0105", // Engine Coolant Temp // case 2
             "010C",// RPM // case 3
             "010D",// Speed // case 4
@@ -212,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //User Selected Commands
     public static String[] USER_COMMANDS = {
+            PIDConstants.RESET,
             PIDConstants.PROTOCOL,
             PIDConstants.OBD_STANDARDS
     };
@@ -248,15 +266,17 @@ public class MainActivity extends AppCompatActivity implements
     private static BluetoothAdapter mBluetoothAdapter;
     private DeviceBroadcastReceiver mReceiver;
     private PairedDevicesDialog dialog;
+    private RawDataDialog rawDataDialog;
+    private GaugeDialog gaugeDialog;
     private List<BluetoothDevice> mDeviceList;
     BluetoothDevice device;
     SendOBD2CMD sendOBD2CMD;
+    public LiveDataViewModel model;
+    Fragment rawDataFrag;
+    Fragment gaugeFrag;
 
     // Files
     FileWriter fileWriter;
-
-    // Fragment
-    Fragment gaugeFragment;
 
     // Widgets
     private TextView mConnectionStatus;
@@ -269,6 +289,11 @@ public class MainActivity extends AppCompatActivity implements
     TextView coolant_txt;
     TextView fuelLevel_txt;
     TextView load_txt;
+    TextView read_txt;
+    TextView write_txt;
+
+    EditText enterCMD_edt;
+    ImageButton submit_btn;
     ImageButton gauges_btn;
     ImageButton hideLayout_btn;
     ToggleButton kLineCMD_tb;
@@ -276,7 +301,9 @@ public class MainActivity extends AppCompatActivity implements
     ToggleButton basicCMD_tb;
     ToggleButton allCMD_tb;
     Button sendCMD_btn;
-    Button cmd_btn;
+    Button showStatus_btn;
+    Button rawData_btn;
+    Button viewHUD_btn;
 
     // Views
     FragmentContainerView fcv;
@@ -298,7 +325,18 @@ public class MainActivity extends AppCompatActivity implements
     public static StringBuilder mSbCmdResp;
     private static StringBuilder mPartialResponse;
     private String mConnectedDeviceName;
+    public Thread repeatingSpeedThread;
+    public Handler repeatingSpeedHandler;
+    public TimerTask repeatingTimerTask;
 
+    public boolean isCONNECTED() {
+        if (mIOGateway.getState() == BluetoothIOGateway.STATE_CONNECTED) {
+            CONNECTED = true;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -317,9 +355,15 @@ public class MainActivity extends AppCompatActivity implements
 
         allCMD_tb = findViewById(R.id.allCMD_tb);
         basicCMD_tb = findViewById(R.id.basicCMD_tb);
-        basicCMD_tb.setChecked(true);
+       // basicCMD_tb.setChecked(true);
+
         sendCMD_btn = findViewById(R.id.sendCMD_btn);
+        showStatus_btn = findViewById(R.id.set_btn);
         hideLayout_btn = findViewById(R.id.hideLayout_btn);
+        rawData_btn = findViewById(R.id.viewData_btn);
+        viewHUD_btn = findViewById(R.id.viewHUD_btn);
+        submit_btn = findViewById(R.id.submit_btn);
+
         kLineLayout = findViewById(R.id.kLineLayout);
         kLine_speed = findViewById(R.id.kLine_speed);
         kLine_rpm = findViewById(R.id.kLine_rpm);
@@ -327,7 +371,9 @@ public class MainActivity extends AppCompatActivity implements
         coolant_txt = findViewById(R.id.coolant_txt);
         fuelLevel_txt = findViewById(R.id.fuel_txt);
         load_txt = findViewById(R.id.load_txt);
-        cmd_btn = findViewById(R.id.set_btn);
+        read_txt = findViewById(R.id.realtime_txt);
+        write_txt = findViewById(R.id.write_txt);
+        enterCMD_edt = findViewById(R.id.enterCMD_edt);
 
         mConnectionStatus = findViewById(R.id.tvConnectionStatus);
         deviceStatus_txt = findViewById(R.id.deviceStatus_txt);
@@ -345,22 +391,98 @@ public class MainActivity extends AppCompatActivity implements
         mSbCmdResp = new StringBuilder();
         mPartialResponse = new StringBuilder();
         mIOGateway = new BluetoothIOGateway(this, mMsgHandler);
+        model = new ViewModelProvider(this).get(LiveDataViewModel.class);
 
-        cmd_btn.setOnClickListener(new View.OnClickListener() {
+        final Observer<Integer> speedObserver = new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable final Integer integer) {
+                speed = showVehicleSpeed(String.valueOf(integer));
+                displayLog("Live Speed Data:\t" + speed);
+            }
+        };
+        model.getCurrentSpeed().observe(this, speedObserver);
+
+        final Observer<Integer> rpmObserver = new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                displayLog("Live RPM:\t" + String.valueOf(integer));
+                rpm = showEngineRPM(String.valueOf(integer));
+            }
+        };
+        model.getCurrentRpm().observe(this, rpmObserver);
+
+        final Observer<String> rawObserver = new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                displayLog("Raw Data:\t" + s);
+                read_txt.setText(s);
+            }
+        };
+        model.getRawData().observe(this, rawObserver);
+
+        submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // "AT PPS" = Display Summary of Supported PP
-                // "AT MA" = Monitor All
-                // "AT TP5" = try protocol 5 ISO 14230-4 fast
-                showAlertDialog();
+                String tempCMD = enterCMD_edt.getText().toString();
+                Handler cmdHandler = new Handler();
+                cmdHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (tempCMD.isEmpty()) {
+                                    Toast.makeText(MainActivity.this, "Enter a Command First", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    new SendOBD2CMD(getApplicationContext(), tempCMD, mIOGateway);
+                                    enterCMD_edt.setText("");
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        
+        rawData_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rawDataFrag = new RawDataDialog();
+                showRawDataDialog((RawDataDialog) rawDataFrag);
+            }
+        });
+
+        viewHUD_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gaugeFrag = new GaugeDialog();
+                showGaugeDialog((GaugeDialog) gaugeFrag);
             }
         });
 
         sendCMD_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendUserCommands(getApplicationContext());
-                sendAllCommands(getApplicationContext());
+                try {
+                    repeatingSpeedCMD();
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        showStatus_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //sendDisplayProtocolCMD(MainActivity.this);
+                //sendPrintSummaryCMD(getApplicationContext());
+                // getSpeedManually(getApplicationContext(), true);
+                try {
+                    repeatingRPMCMD();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -377,7 +499,11 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    sendBasicCommands(getApplicationContext());
+                    try {
+                        sendInitialCommands(getApplicationContext());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -393,6 +519,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+
 
         if (mBluetoothAdapter == null) {
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -413,6 +540,7 @@ public class MainActivity extends AppCompatActivity implements
 
 //         Register EventBus
         EventBus.getDefault().register(this);
+
     }
 
     @Override
@@ -445,8 +573,119 @@ public class MainActivity extends AppCompatActivity implements
             mSbCmdResp.setLength(0);
         }
     }
-    private void setKlineProtocol() {
-        sendOBD2CMD = new SendOBD2CMD(this, SET_KLINE_PROTOCOL_CMD, mIOGateway);
+    private void repeatingSpeedCMD() throws InterruptedException {
+        Timer timer = new Timer();
+        repeatingTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new SendOBD2CMD(MainActivity.this, PIDConstants.VEHICLE_SPEED, mIOGateway);
+                    }
+                });
+            }
+        };
+        timer.scheduleAtFixedRate(repeatingTimerTask, 1000, 5000);
+    }
+
+    private void repeatingRPMCMD() throws InterruptedException {
+        Timer timer = new Timer();
+        TimerTask repeatingRPMTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new SendOBD2CMD(MainActivity.this, PIDConstants.ENGINE_RPM, mIOGateway);
+                    }
+                });
+            }
+        };
+        timer.scheduleAtFixedRate(repeatingRPMTimerTask, 1000, 5000);
+    }
+
+
+    private void getSpeedManually() throws InterruptedException {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (isCONNECTED()) {
+                    sendOBD2CMD = new SendOBD2CMD(MainActivity.this, PIDConstants.VEHICLE_SPEED, mIOGateway);
+                    displayLog("Speed Set");
+                    if (!isCONNECTED()) {
+                        break;
+                    }
+                }
+            }
+        });
+        thread.start();
+    }
+
+    private void checkIgnitionPosition() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, PIDConstants.CHECK_IGNITION_POSITION, mIOGateway);
+            }
+        });
+    }
+
+    private void sendIdentifyCMD() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String displayProtocol = "AT DP";
+                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, PIDConstants.IDENTIFY_YOURSELF, mIOGateway);
+            }
+        });
+    }
+
+    private void sendResetCMD() {
+        String resetCMD = PIDConstants.RESET;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, resetCMD, mIOGateway);
+                sendStatusRequestCMD();
+            }
+        });
+    }
+
+    private void sendStatusRequestCMD() {
+        String statusRequest = "AT IA"; // Check if ELM327 is still active
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, statusRequest, mIOGateway);
+            }
+        },10000); // Wait 2 seconds before sending
+        sendStatusRequestCMD(); // repeat the request
+    }
+
+    private void sendPrintSummaryCMD() {
+        String printSummary = "AT PPS";
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, printSummary, mIOGateway);
+            }
+        });
+    }
+
+    private void sendMonitorAllCMD() {
+        String monitorAll = "AT MA";
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    sendOBD2CMD = new SendOBD2CMD(MainActivity.this, monitorAll, mIOGateway);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     Handler mMsgHandler = new Handler(Looper.getMainLooper()) {
@@ -467,8 +706,14 @@ public class MainActivity extends AppCompatActivity implements
                         case BluetoothIOGateway.STATE_CONNECTED:
                             mConnectionStatus.setText(getString(R.string.BT_status_connected_to) + " " + mConnectedDeviceName);
                             mConnectionStatus.setBackgroundColor(Color.rgb(65, 131, 19));
-                            sendBasicCommands(getApplicationContext());
+                            try {
+                                sendInitialCommands(MainActivity.this);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
                             INITIAL_SENT = true;
+                            setupMonitor();
                             setCONNECTED(true);
                             break;
 
@@ -491,7 +736,11 @@ public class MainActivity extends AppCompatActivity implements
 
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-
+                    BUFFER = new StringBuffer();
+                    BUFFER.append(readMessage);
+                    displayLog("String BUFFER:\t" + BUFFER.toString());
+                    displayLog("Read:\t" + readMessage);
+                    read_txt.setText("READ:\t" + readMessage);
                     readMessage = readMessage.trim();
                     readMessage = readMessage.toUpperCase();
                     char lastChar = ' ';
@@ -523,7 +772,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-
+                    write_txt.setText("WRITE:\t" + writeMessage);
                     mSbCmdResp.append("W>>");
                     mSbCmdResp.append(writeMessage);
                     mSbCmdResp.append("\n");
@@ -563,7 +812,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.menu_send_cmd:
                 allCMDPointer = -1;
-                sendAllCommands(getApplicationContext());
+                sendAllCommands(MainActivity.this);
                 ALL_SENT = true;
                 return true;
 
@@ -591,7 +840,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 return true;
             case R.id.menu_hud_mode:
-                //showGaugeViewFragment();
                 return true;
             case R.id.menu_refresh:
                 queryPairedDevices();
@@ -621,58 +869,33 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showAlertDialog() {
+        String[] items = {"AT TP5","AT MA","AT CSM0","AT KW0"};
+        int checkedItem = 0;
+
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        alertDialog.setTitle("AlertDialog");
+        alertDialog.setTitle("Select Command");
         alertDialog.setPositiveButton("CLOSE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                sendOBD2CMD = new SendOBD2CMD(getApplicationContext(), selection, mIOGateway);
                 dialog.dismiss();
             }
         });
-        String[] items = {"Protocol","Monitor All","Silent Mode Off","Reset"};
-        int checkedItem = 1;
+
         alertDialog.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Handler handler = new Handler();
                 switch (which) {
                     case 0:
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendOBD2CMD = new SendOBD2CMD(getApplicationContext(), DISPLAY_PROTOCOL_CMD, mIOGateway);
-                                Toast.makeText(MainActivity.this, "AT DP", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            }
-                        });
-                        break;
                     case 1:
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendOBD2CMD = new SendOBD2CMD(getApplicationContext(), MONITOR_ALL, mIOGateway);
-                                Toast.makeText(MainActivity.this, "AT MA", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            }
-                        });
-                        break;
                     case 2:
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendOBD2CMD = new SendOBD2CMD(getApplicationContext(), "AT CSM0", mIOGateway);
-                                Toast.makeText(MainActivity.this, "AT CSM0", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            }
-                        });
-                        break;
                     case 3:
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                sendOBD2CMD = new SendOBD2CMD(getApplicationContext(), "AT Z", mIOGateway);
-                                Toast.makeText(MainActivity.this, "AT Z", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
+                                Toast.makeText(MainActivity.this, items[which], Toast.LENGTH_SHORT).show();
+                                selection = items[which];
                             }
                         });
                         break;
@@ -684,21 +907,6 @@ public class MainActivity extends AppCompatActivity implements
         alert.show();
     }
 
-    private void showGaugeViewFragment() {
-        fcv.setVisibility(View.VISIBLE);
-        gaugeFragment = new GaugeViewFragment();
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(
-                        R.anim.slide_in,
-                        R.anim.fade_out,
-                        R.anim.fade_in,
-                        R.anim.slide_out
-                )
-                .replace(R.id.fragment_view, gaugeFragment)
-                .addToBackStack("gaugeFragment")
-                .setReorderingAllowed(true)
-                .commit();
-    }
 
     private void setupMonitor() {
         // Start mIOGateway
@@ -732,6 +940,30 @@ public class MainActivity extends AppCompatActivity implements
             //displayLog("No paired device found");
             scanAroundDevices();
         }
+    }
+
+    private void showGaugeDialog(GaugeDialog gaugeDialog) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        gaugeFrag = getSupportFragmentManager().findFragmentByTag(TAG_GAUGE);
+        if (gaugeFrag != null) {
+            ft.remove(gaugeFrag);
+        }
+        ft.addToBackStack(null);
+
+        gaugeDialog.show(ft, "gauge_dialog");
+
+    }
+
+    private void showRawDataDialog(RawDataDialog rawDataDialog) {
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        rawDataFrag = getSupportFragmentManager().findFragmentByTag(TAG_DIALOG_RAW);
+        if (rawDataFrag != null) {
+            ft.remove(rawDataFrag);
+        }
+        ft.addToBackStack(null);
+
+        rawDataDialog.show(ft, "raw_dialog");
     }
 
     private void showChooserDialog(PairedDevicesDialog dialogFragment) {
@@ -823,6 +1055,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void sendUserCommands(Context context) {
         USER_SENT = true;
+        displayLog("---Sent User CMDS---");
         if (inSimulatorMode) {
             displayMessage("You are in simulator mode!");
             return;
@@ -839,6 +1072,7 @@ public class MainActivity extends AppCompatActivity implements
             public void run() {
                 try {
                     sendOBD2CMD = new SendOBD2CMD(context, USER_COMMANDS[userCMDPointer], mIOGateway);
+                    Log.i("CMDS", USER_COMMANDS[userCMDPointer]);
                 } catch (Exception e) {
                     displayErrorLog(e.getMessage());
                 }
@@ -848,7 +1082,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void sendAllCommands(Context context) {
         ALL_SENT = true;
-        //displayLog("SENDING --ALL-- COMMANDS...");
+        displayLog("SENDING --ALL-- COMMANDS...");
         if (inSimulatorMode) {
             displayMessage("You are in simulator mode!");
             return;
@@ -869,32 +1103,68 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void sendBasicCommands(Context context) {
-        INITIAL_SENT = true;
+    private void sendBasicCommands() {
+        displayLog("---Sending Basic CMDS...---");
         if (inSimulatorMode) {
             displayMessage("You are in simulator mode!");
             return;
         }
-        if (initialCMDPointer < 0) {
-            initialCMDPointer = -1;
-        }
-
-        if (initialCMDPointer >= BASIC_COMMANDS.length - 1) {
-            initialCMDPointer = 1;
-        }
-        initialCMDPointer++;
-        runOnUiThread(new Runnable() {
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                sendOBD2CMD = new SendOBD2CMD(context, BASIC_COMMANDS[initialCMDPointer], mIOGateway);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < BASIC_COMMANDS.length; i++) {
+                            sendOBD2CMD = new SendOBD2CMD(MainActivity.this, BASIC_COMMANDS[i], mIOGateway);
+                            displayLog("Basic CMDS:\t" + BASIC_COMMANDS[i]);
+                        }
+                    }
+                });
             }
-        });
+        };
+        handler.post(runnable);
+    }
+
+    private void sendInitialCommands(Context context) throws InterruptedException {
+        INITIAL_SENT = true;
+        displayLog("---Sending Initial CMDS...---");
+        if (inSimulatorMode) {
+            displayMessage("You are in simulator mode!");
+            return;
+        }
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        for (int i = 0; i < INITIAL_CMDS.length; i++) {
+                            displayLog(INITIAL_CMDS[i]);
+                            sendOBD2CMD = new SendOBD2CMD(context, INITIAL_CMDS[i], mIOGateway);
+                        }
+                        displayLog("---Initial CMDS Sent---");
+                    }
+                });
+            }
+
+        };
+        handler.post(runnable);
     }
 
     @SuppressLint("SetTextI18n")
     private void parseResponse(String buffer) throws ScriptException {
         displayLog("RAW BUFFER Response : " + buffer);
         mSbCmdResp.append(buffer);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                model.getRawData().setValue(String.valueOf(mSbCmdResp));
+            }
+        });
         if (buffer.contains("STOPPED")) {
            // Log.i("MA", String.valueOf(device) + "STOPPED");
             deviceStatus_txt.setText(R.string.stopped);
@@ -906,12 +1176,24 @@ public class MainActivity extends AppCompatActivity implements
 
         if (buffer.contains("010D")) {
             speed = showVehicleSpeed(buffer);
-            kLine_speed.setText("MPH:\t" + String.valueOf(speed));
+            kLine_speed.setText("MPH:\t" + speed);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    model.getCurrentSpeed().setValue(speed);
+                }
+            });
         }
 
         else if (buffer.contains("010C")) {
             rpm = showEngineRPM(buffer);
-            kLine_rpm.setText("RPM:\t" + String.valueOf(rpm));
+            kLine_rpm.setText("RPM:\t" + rpm);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    model.getCurrentRpm().setValue(rpm);
+                }
+            });
         }
 
         else if (buffer.contains("ATTP")) {
@@ -927,7 +1209,7 @@ public class MainActivity extends AppCompatActivity implements
         else if (buffer.contains("ATRV")) {
             try {
                 voltage = showVoltage(buffer);
-                voltage_txt.setText("Voltage:\t" + String.valueOf(voltage));
+                voltage_txt.setText("Voltage:\t" + voltage);
             } catch (Exception e) {
                 displayErrorLog(e.getMessage());
             }
@@ -936,7 +1218,7 @@ public class MainActivity extends AppCompatActivity implements
         else if (buffer.contains("0105")) {
             try {
                 engineCoolantTemp = showEngineCoolantTemperature(buffer);
-                coolant_txt.setText("Coolant Temp:\t" + String.valueOf(engineCoolantTemp));
+                coolant_txt.setText("Coolant Temp:\t" + engineCoolantTemp);
             } catch (Exception e) {
                 displayErrorLog("Coolant Error\t" + e.getMessage());
             }
@@ -952,7 +1234,7 @@ public class MainActivity extends AppCompatActivity implements
         } else if (buffer.contains("0104")) {
             try {
                 engineLoad = showEngineLoad(buffer);
-                load_txt.setText("Engine Load:\t" + String.valueOf(engineLoad));
+                load_txt.setText("Engine Load:\t" + engineLoad);
             } catch (Exception e) {
                 displayErrorLog("Engine Load Error\t" + e.getMessage());
             }
@@ -960,13 +1242,33 @@ public class MainActivity extends AppCompatActivity implements
         } else if (buffer.contains("012F")) {
             try {
                 fuelLevel = showFuelLevel(buffer);
-                fuelLevel_txt.setText("Fuel Level:\t" + String.valueOf(fuelLevel));
+                fuelLevel_txt.setText("Fuel Level:\t" + fuelLevel);
             } catch (Exception e) {
                 displayErrorLog("Fuel Error\t" + e.getMessage());
             }
+        } else if (buffer.contains("ATSP")) {
+             currentProtocol = showCurrentProtocol(buffer);
+             protocol_txt.setText(currentProtocol);
+        } else if (buffer.contains("ATMA")) {
+            displayLog("----AT MA is Active----");
+        } else if (buffer.contains("ATTP3OK")) {
+            displayLog("-------- 9141 LOCATED ---------");
         }
-        if (basicCMD_tb.isChecked()) {
-            sendBasicCommands(getApplicationContext());
+
+
+        else if (basicCMD_tb.isChecked()) {
+            try {
+                sendInitialCommands(getApplicationContext());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for (int i =0; i < 100; i++) {
+                displayLog("Basic Commands Sent" + i);
+            }
+        }
+        else if (allCMD_tb.isChecked()) {
+            sendAllCommands(this);
         }
     }
 

@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.denommeinc.vern.gauges.GaugeViewFragment"
-    android:gravity="center_vertical|center_horizontal"
-    android:background="@color/background_dark">
+    tools:context="com.denommeinc.vern.gui.GaugeDialog"
+    android:gravity="center"
+    android:background="@color/black">
 
         <com.github.anastr.speedviewlib.SpeedView
             android:id="@+id/speedView"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             app:sv_maxSpeed="200"
             app:sv_withTremble="true"
@@ -18,13 +18,13 @@
             app:sv_unitUnderSpeedText="true"
             app:sv_speedTextColor="@color/white"
             app:sv_unitTextColor="@color/white"
-            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
             />
 
         <com.github.anastr.speedviewlib.ProgressiveGauge
             android:id="@+id/progressiveGauge"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             app:sv_maxSpeed="8000"
             app:sv_unit="@string/rpm"
             app:sv_speedTextColor="@color/white"
@@ -33,23 +33,23 @@
             app:sv_speedTextPosition="CENTER"
             app:sv_speedometerColor="@color/halo_red"
             android:layout_below="@+id/speedView"
+            android:layout_marginHorizontal="10dp"
             />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+        <ImageButton
+            android:id="@+id/closeGauges_ib"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_below="@+id/progressiveGauge"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@color/transparent"
+            android:layout_margin="20dp"
+            android:backgroundTint="@color/transparent"
             android:clickable="true"
             android:contentDescription="@string/refresh"
             android:focusable="true"
-            android:src="@drawable/ic_baseline_refresh_24" />
+            android:src="@drawable/ic_baseline_close_24"
+            tools:ignore="TouchTargetSizeCheck"
+            android:layout_alignParentTop="true"/>
 
 
 </RelativeLayout>

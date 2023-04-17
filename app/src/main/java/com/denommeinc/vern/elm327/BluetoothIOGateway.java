@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.denommeinc.vern.MainActivity;
 import com.denommeinc.vern.utility.MyLog;
@@ -567,6 +568,11 @@ public class BluetoothIOGateway
 
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+
+                    if (mHandler.obtainMessage() != null) {
+                        Log.i("BYTE_BUFFER", "---Buffer is OKAY---");
+                    }
+
                 }
                 catch (IOException e)
                 {

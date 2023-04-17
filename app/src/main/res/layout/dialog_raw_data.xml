@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".gui.RawDataDialog"
+    android:background="@color/black"
+    >
+
+    <ImageButton
+        android:id="@+id/dataDialogClose_ib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_close_24"
+        android:backgroundTint="@color/transparent"
+        android:layout_gravity="end"
+        android:contentDescription="@string/close_gauges"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"/>
+
+    <LinearLayout
+        android:id="@+id/speedLayout"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/dataDialogClose_ib"
+        android:layout_marginHorizontal="10dp">
+
+        <TextView
+            android:id="@+id/speedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speed"
+            android:textSize="12pt"
+            android:textColor="@color/white"
+            android:labelFor="@+id/liveData_txt"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/liveData_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dashes"
+            android:textSize="16pt"
+            android:textColor="@color/halo_red"
+            android:textColorHint="@color/halo_red"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rpmLayout"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/speedLayout"
+        android:layout_below="@+id/dataDialogClose_ib"
+        android:layout_marginHorizontal="10dp">
+
+        <TextView
+            android:id="@+id/rpmLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rpm"
+            android:textColor="@color/white"
+            android:textSize="12pt"
+            android:layout_marginHorizontal="10dp"
+            android:labelFor="@+id/liveDataRpm_txt"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/liveDataRpm_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dashes"
+            android:textColorHint="@color/halo_red"
+            android:textColor="@color/halo_red"
+            android:textSize="16pt"
+            android:gravity="center_horizontal"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rawDataLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/speedLayout"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/rawDataLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/raw_data"
+            android:textColor="@color/white"
+            android:textSize="12pt"
+            android:layout_marginHorizontal="10dp"
+            android:labelFor="@+id/liveDataRpm_txt"
+            android:gravity="center_horizontal"/>
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:nestedScrollingEnabled="true"
+            android:scrollbarSize="20dp"
+            android:verticalScrollbarPosition="right"
+            android:background="@color/white"
+            android:fadeScrollbars="false"
+            >
+
+            <TextView
+                android:id="@+id/rawData_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:hint="@string/dashes"
+                android:textColor="@color/halo_red"
+                android:textColorHint="@color/halo_red"
+                android:textSize="16pt"
+                android:layout_gravity="bottom"/>
+        </ScrollView>
+
+    </LinearLayout>
+
+</RelativeLayout>

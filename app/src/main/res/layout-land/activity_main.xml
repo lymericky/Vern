@@ -53,19 +53,11 @@
                     android:id="@+id/sendCMD_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toStartOf="@+id/hideLayout_btn"
+                    android:layout_alignStart="@+id/set_btn"
+                    android:layout_alignEnd="@+id/set_btn"
                     android:layout_toEndOf="@+id/viewData_btn"
                     android:text="@string/send_cmd"
                     tools:ignore="TextContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/hideLayout_btn"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_baseline_close_24"
-                    android:contentDescription="@string/close_gauges"
-                    android:layout_alignParentEnd="true"
-                    android:background="@color/transparent" />
 
                 <Button
                     android:id="@+id/viewHUD_btn"
@@ -80,17 +72,71 @@
                     android:id="@+id/set_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/hideLayout_btn"
-                    android:layout_alignStart="@+id/sendCMD_btn"
-                    android:layout_alignEnd="@+id/sendCMD_btn"
-                    android:text="@string/selection"
-                    tools:ignore="TextContrastCheck" />
+                    android:layout_below="@+id/sendCMD_btn"
+                    android:layout_toEndOf="@+id/viewHUD_btn"
+                    android:text="@string/show_status"
+                    tools:ignore="TextContrastCheck"
+                    android:layout_marginStart="10dp"/>
+
+                <LinearLayout
+                    android:id="@+id/allToggleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/sendCMD_btn">
+
+                    <ToggleButton
+                        android:id="@+id/allCMD_tb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+                    <TextView
+                        android:id="@+id/allLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/all_cmd"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/basicToggleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/allToggleLayout">
+
+                    <ToggleButton
+                        android:id="@+id/basicCMD_tb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+                    <TextView
+                        android:id="@+id/basicLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/basic_cmds"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/hideLayout_btn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_baseline_close_24"
+                    android:contentDescription="@string/close_gauges"
+                    android:background="@color/transparent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/basicToggleLayout"/>
 
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/textHolderLayout"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -165,81 +211,96 @@
                         android:textColor="@color/green"
                         android:textColorHint="@color/white"/>
                 </LinearLayout>
+
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/toggleBtnLayout"
-                android:layout_width="match_parent"
+
+        </LinearLayout>
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:nestedScrollingEnabled="true"
+        android:scrollbarSize="20dp"
+        android:verticalScrollbarPosition="right"
+        android:background="@color/white"
+        android:fadeScrollbars="false"
+        android:layout_above="@+id/enterCMD_edt"
+        android:layout_below="@+id/kLineLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/realtime_txt"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
+                android:hint="@string/dashes"
+                android:textColor="@color/halo_red"
+                android:textColorHint="@color/halo_red"
+                android:textSize="8pt"
+                android:layout_gravity="bottom"/>
 
-                <LinearLayout
-                    android:id="@+id/basicToggleLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="5dp">
-
-                    <ToggleButton
-                        android:id="@+id/basicCMD_tb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:ignore="DuplicateSpeakableTextCheck" />
-                    <TextView
-                        android:id="@+id/basicLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/basic_cmds"
-                        android:textColor="@color/white"
-                        android:layout_gravity="center" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/allToggleLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="5dp">
-
-                    <ToggleButton
-                        android:id="@+id/allCMD_tb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:id="@+id/allLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/all_cmd"
-                        android:textColor="@color/white"
-                        android:layout_gravity="center" />
-                </LinearLayout>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/write_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/dashes"
+                android:textColor="@color/purple_500"
+                android:textColorHint="@color/purple_500"
+                android:textSize="8pt"
+                android:layout_gravity="bottom"
+                android:paddingHorizontal="10dp"/>
 
         </LinearLayout>
 
-    <TextView
-        android:id="@+id/liveData_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/live_data"
-        android:textColorHint="@color/white"
-        android:textColor="@color/halo_red"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        android:gravity="center_horizontal"/>
+    </ScrollView>
 
     <com.github.anastr.speedviewlib.AwesomeSpeedometer
         android:id="@+id/tempSpeedometer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="40dp"
-        android:layout_marginHorizontal="10dp"
-        app:sv_maxSpeed="8000"
         app:sv_unit="@string/rpm"
-        android:padding="10dp"/>
+        app:sv_maxSpeed="10000"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/enterCMD_edt"
+        android:layout_margin="10dp"/>
+
+    <EditText
+        android:id="@+id/enterCMD_edt"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_toStartOf="@+id/submit_btn"
+        android:background="@color/black"
+        android:hint="@string/enter_command"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <ImageButton
+        android:id="@+id/submit_btn"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@drawable/ic_baseline_send_24"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:contentDescription="@string/enter_command"/>
+
+
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_view"

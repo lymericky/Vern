@@ -94,6 +94,14 @@
     <string name="set">SET</string>
     <string name="basic_cmds">Basic</string>
     <string name="set_protocol">Set Protocol</string>
+    <string name="view_raw_data">View Raw Data</string>
+    <string name="live_data">Live Data</string>
+    <string name="get_live_data">Get Live Data</string>
+    <string name="view_hud">View HUD</string>
+    <string name="raw_data">Raw Data</string>
+    <string name="show_status">Show Status</string>
+    <string name="command">Command</string>
+    <string name="enter_command">Enter Command:</string>
 
     <string-array name="obd_cmd">
         <item>CMD Selection</item>

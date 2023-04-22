@@ -102,6 +102,34 @@
     <string name="show_status">Show Status</string>
     <string name="command">Command</string>
     <string name="enter_command">Enter Command:</string>
+    <string name="reset_cmd">Reset CMD</string>
+    <string name="show_toggle_buttons">Show Toggle Buttons</string>
+    <string name="keywords">Keywords</string>
+    <string name="status">Status</string>
+    <string name="monitor_all">Monitor All</string>
+    <string name="identify">Identify</string>
+    <string name="set_defaults">Set Defaults</string>
+    <string name="obd_standards">OBD Standards</string>
+    <string name="can_status">CAN Status</string>
+    <string name="silent_mode">Silent Mode</string>
+    <string name="pp_summary">PP Summary</string>
+    <string name="auto_receive">Auto Receive</string>
+    <string name="_reset">Reset</string>
+    <string name="_voltage">Voltage</string>
+    <string name="_coolant_temp">Coolant Temp</string>
+    <string name="_load">Load</string>
+    <string name="_ignition_status">Ignition Status</string>
+    <string name="result">Result</string>
+    <string name="read">Read:</string>
+    <string name="write">Write:</string>
+    <string name="ib_10">IB 10</string>
+    <string name="ib_12">IB 12</string>
+    <string name="ib_15">IB 15</string>
+    <string name="ib_48">IB 48</string>
+    <string name="ib_96">IB 96</string>
+    <string name="set_baud_rate">Set Baud Rate</string>
+    <string name="current_baud_rate">Current Baud Rate</string>
+    <string name="appended">Appended...</string>
 
     <string-array name="obd_cmd">
         <item>CMD Selection</item>

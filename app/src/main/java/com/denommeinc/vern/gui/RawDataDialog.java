@@ -111,7 +111,7 @@ public class RawDataDialog extends DialogFragment {
                 }
             }
         });
-        model.getRawData().observe(getViewLifecycleOwner(), new Observer<String>() {
+        model.getRawDataRead().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 rawData = s;

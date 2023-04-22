@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".gui.ToggleDialog"
+    android:background="@color/black"
+    tools:ignore="TooManyViews">
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/speedCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="DuplicateSpeakableTextCheck" />
+
+        <TextView
+            android:id="@+id/speedLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speed"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/speedResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout1"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/rpmCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/rpmLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rpm"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/rpmResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout2"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/protocol9141CMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/protocol9141Lbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/set_protocol"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/protocol9141Result_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout3"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/displayProtocolCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/displayProtocolLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/protocol"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/displayProtocolResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout4"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/keywordsCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/keywordsLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/keywords"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/keywordsResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout5"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/statusCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/statusLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/status"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/statusResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout6"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/monitorAllCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/monitorAllLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/monitor_all"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/monitorAllResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout7"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/identifyCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/identifyLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/identify"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/identifyResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout8"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/setDefaultsCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/setDefaultsLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/set_defaults"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/setDefaultsResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout9"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/standardsCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/standardsLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/obd_standards"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/standardsResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout10"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/canStatusCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/canStatusLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/can_status"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/canStatusResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout11"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/silentModeCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/silentModeLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/silent_mode"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/silentModeResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/layout16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/layout1"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/voltageCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/voltageLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_voltage"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/voltageResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout16"
+        android:layout_below="@+id/layout2"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/coolantCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/coolantLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_coolant_temp"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/coolantResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/layout3"
+        android:layout_toEndOf="@+id/layout17"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/loadCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/loadLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_load"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/loadResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout18"
+        android:layout_below="@+id/layout5"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/ppSummaryCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/ppSummaryLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pp_summary"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/ppSummaryResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout13"
+        android:layout_below="@+id/layout6"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/automaticReceiveCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/automaticReceiveLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/auto_receive"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/ARResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/layout14"
+        android:layout_below="@+id/layout7"
+        android:layout_margin="2dp"
+        android:gravity="center_horizontal">
+
+        <ToggleButton
+            android:id="@+id/resetCMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/resetLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_reset"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/resetResult_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="@string/result"
+            android:textColor="@color/white"
+            android:textColorHint="@color/yellow"/>
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/baudRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout16"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp">
+
+        <RadioButton
+            android:id="@+id/ib10_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ib_10"
+            android:layout_marginEnd="10dp"/>
+        <RadioButton
+            android:id="@+id/ib12_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ib_12"
+            android:layout_marginEnd="10dp"/>
+        <RadioButton
+            android:id="@+id/ib15_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ib_15"
+            android:layout_marginEnd="10dp"/>
+        <RadioButton
+            android:id="@+id/ib48_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ib_48"
+            android:layout_marginEnd="10dp"/>
+        <RadioButton
+            android:id="@+id/ib96_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ib_96"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/setBaud_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/set_baud_rate"
+        android:layout_toEndOf="@+id/baudRadioGroup"
+        android:layout_alignTop="@+id/baudRadioGroup"
+        android:layout_alignBottom="@+id/baudRadioGroup"
+        android:layout_marginStart="10dp"/>
+    <TextView
+        android:id="@+id/baudRate_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/setBaud_btn"
+        android:layout_alignTop="@+id/setBaud_btn"
+        android:layout_alignBottom="@+id/setBaud_btn"
+        android:hint="@string/current_baud_rate"
+        android:textColorHint="@color/yellow"
+        android:gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/yellow"/>
+
+
+    <LinearLayout
+        android:id="@+id/layout20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/baudRadioGroup"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        android:layout_marginBottom="10dp"
+        android:nestedScrollingEnabled="true"
+        >
+
+        <TextView
+            android:id="@+id/read_txt"
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginEnd="10dp"
+            android:text="@string/read"
+            android:textSize="12pt"
+            android:gravity="bottom|center_horizontal" />
+
+        <TextView
+            android:id="@+id/write_txt"
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginHorizontal="10dp"
+            android:text="@string/write"
+            android:gravity="bottom|center_horizontal"
+            android:textSize="12pt"/>
+
+        <TextView
+            android:id="@+id/appendedResponse_txt"
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginStart="10dp"
+            android:text="@string/appended"
+            android:layout_gravity="bottom"
+            android:gravity="bottom|center_horizontal"
+            android:textSize="12pt"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

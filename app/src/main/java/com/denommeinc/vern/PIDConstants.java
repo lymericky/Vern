@@ -22,7 +22,7 @@ public class PIDConstants {
             PROTOCOL_3 = "AT_TP3", // 9141
             PP_14230_KWP4 = "AT TP A4",
             PP_14230_KWP5_FAST = "AT SP A5",
-            PROTOCOL_AUTO = "AT_SP0",
+            PROTOCOL_AUTO = "AT SP0",
             RESET = "AT Z", // "AT Z"
             CLEAR_DTC_CODES = "04",
             PIDS_SUPPORTED = "0100",

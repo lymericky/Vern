@@ -15,5 +15,7 @@
     <color name="floating_material_dark">#424242</color>
     <color name="transparent">#0000</color>
     <color name="green">#FF009900</color>
+    <color name="blue">#0000FF</color>
+    <color name="yellow">#FFEB3B</color>
 
 </resources>

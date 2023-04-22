@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/abstract_background"
+    android:id="@+id/mainLayout">
+
+    <TextView
+        android:id="@+id/tvConnectionStatus"
+        style="@style/connection_status_title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/halo_red"
+        android:gravity="center"
+        android:text="@string/BT_connection_status" />
+    <TextView
+        android:id="@+id/deviceStatus_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/device"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:layout_below="@+id/tvConnectionStatus"
+        android:gravity="center_horizontal" />
+
+        <LinearLayout
+            android:id="@+id/kLineLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible"
+            android:layout_below="@+id/deviceStatus_txt"
+            android:layout_marginHorizontal="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/viewData_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_raw_data"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginHorizontal="10dp"/>
+
+                <Button
+                    android:id="@+id/sendCMD_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/set_btn"
+                    android:layout_alignEnd="@+id/set_btn"
+                    android:layout_toEndOf="@+id/viewData_btn"
+                    android:text="@string/send_cmd"
+                    tools:ignore="TextContrastCheck" />
+
+                <Button
+                    android:id="@+id/viewHUD_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/viewData_btn"
+                    android:layout_alignStart="@+id/viewData_btn"
+                    android:layout_alignEnd="@+id/viewData_btn"
+                    android:text="@string/view_hud"/>
+
+                <Button
+                    android:id="@+id/set_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/sendCMD_btn"
+                    android:layout_toEndOf="@+id/viewHUD_btn"
+                    android:text="@string/show_status"
+                    tools:ignore="TextContrastCheck"
+                    android:layout_marginStart="10dp"/>
+
+                <LinearLayout
+                    android:id="@+id/allToggleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/sendCMD_btn">
+
+                    <ToggleButton
+                        android:id="@+id/allCMD_tb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+                    <TextView
+                        android:id="@+id/allLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/all_cmd"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/basicToggleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/allToggleLayout">
+
+                    <ToggleButton
+                        android:id="@+id/basicCMD_tb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+                    <TextView
+                        android:id="@+id/basicLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/basic_cmds"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/resetCMD_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/basicToggleLayout"
+                    android:text="@string/reset_cmd"
+                    android:layout_marginHorizontal="10dp"
+                    tools:ignore="RelativeOverlap" />
+
+                <Button
+                    android:id="@+id/showToggleLayout_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/resetCMD_btn"
+                    android:text="@string/show_toggle_buttons"
+                    tools:ignore="RelativeOverlap" />
+
+                <ImageButton
+                    android:id="@+id/hideLayout_btn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_baseline_close_24"
+                    android:contentDescription="@string/close_gauges"
+                    android:background="@color/transparent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="20dp"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/textHolderLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/textLayout1"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/output_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/protocol"
+                        android:textColor="@color/green"
+                        android:textColorHint="@color/white"/>
+
+                    <TextView
+                        android:id="@+id/standards_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/standards"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/green"/>
+                    <TextView
+                        android:id="@+id/kLine_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/speed"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/green"/>
+                    <TextView
+                        android:id="@+id/kLine_rpm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/rpm"
+                        android:textColor="@color/green"
+                        android:textColorHint="@color/white"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/textLayout2"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/voltage_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/voltage"
+                        android:textColor="@color/green"
+                        android:textColorHint="@color/white"/>
+                    <TextView
+                        android:id="@+id/coolant_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/coolant_temp"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/green"/>
+                    <TextView
+                        android:id="@+id/fuel_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/fuel_level"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/green"/>
+                    <TextView
+                        android:id="@+id/load_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/load"
+                        android:textColor="@color/green"
+                        android:textColorHint="@color/white"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:nestedScrollingEnabled="true"
+        android:scrollbarSize="20dp"
+        android:verticalScrollbarPosition="right"
+        android:background="@color/white"
+        android:fadeScrollbars="false"
+        android:layout_above="@+id/enterCMD_edt"
+        android:layout_below="@+id/kLineLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:nestedScrollingEnabled="true">
+
+            <TextView
+                android:id="@+id/realtime_txt"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/dashes"
+                android:textColor="@color/halo_red"
+                android:textColorHint="@color/halo_red"
+                android:textSize="8pt"
+                android:layout_gravity="bottom"/>
+
+            <TextView
+                android:id="@+id/write_txt"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/dashes"
+                android:textColor="@color/purple_500"
+                android:textColorHint="@color/purple_500"
+                android:textSize="8pt"
+                android:layout_gravity="bottom"
+                android:paddingHorizontal="10dp"/>
+
+            <TextView
+                android:id="@+id/appendedResponse_txt"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/dashes"
+                android:textColor="@color/halo_red"
+                android:textSize="8pt"
+                android:layout_gravity="bottom"
+                android:paddingHorizontal="10dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <com.github.anastr.speedviewlib.AwesomeSpeedometer
+        android:id="@+id/tempSpeedometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:sv_unit="@string/rpm"
+        app:sv_maxSpeed="10000"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/enterCMD_edt"
+        android:layout_margin="10dp"/>
+
+    <EditText
+        android:id="@+id/enterCMD_edt"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_toStartOf="@+id/submit_btn"
+        android:background="@color/black"
+        android:hint="@string/enter_command"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <ImageButton
+        android:id="@+id/submit_btn"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@drawable/ic_baseline_send_24"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:contentDescription="@string/enter_command"/>
+
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:visibility="invisible"
+        tools:layout="@layout/dialog_gauge" />
+
+
+</RelativeLayout>

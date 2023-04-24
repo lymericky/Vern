@@ -44,6 +44,7 @@ import com.denommeinc.vern.gui.RawDataDialog;
 import com.denommeinc.vern.gui.ToggleDialog;
 import com.denommeinc.vern.utility.SendInitializationOBD2CMD;
 import com.denommeinc.vern.utility.SendOBD2CMD;
+import com.denommeinc.vern.utility.SendNewOBD2CMD;
 import com.denommeinc.vern.utility.UnicodeFormatter;
 import com.denommeinc.vern.live_data.LiveDataViewModel;
 import com.github.anastr.speedviewlib.AwesomeSpeedometer;
@@ -55,13 +56,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.MissingFormatArgumentException;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.locks.Lock;
 
 import javax.script.ScriptException;
 
@@ -148,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements
     public static int currentBaudRate = 0;
     public int counter = 0;
     public int counter2 = 0;
+    public int counter3 = 0;
+    public int counter4 = 0;
 
     public static String obdStandards = null;
     public static String currentSetProtocol9141 = null;
@@ -297,7 +296,8 @@ public class MainActivity extends AppCompatActivity implements
     private GaugeDialog gaugeDialog;
     private List<BluetoothDevice> mDeviceList;
     BluetoothDevice device;
-    SendOBD2CMD sendOBD2CMD, sendOBD2CMD_2;
+    SendOBD2CMD sendOBD2CMD = null,
+            sendOBD2CMD_2 = null;
     public LiveDataViewModel model;
     Fragment rawDataFrag;
     Fragment gaugeFrag;
@@ -336,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements
     Button viewHUD_btn;
     Button resetCMD_btn;
     Button showToggleLayout_btn;
+    Button setProtocolCMD_btn;
 
     // Views
     FragmentContainerView fcv;
@@ -397,6 +398,7 @@ public class MainActivity extends AppCompatActivity implements
         submit_btn = findViewById(R.id.submit_btn);
         resetCMD_btn = findViewById(R.id.resetCMD_btn);
         showToggleLayout_btn = findViewById(R.id.showToggleLayout_btn);
+        setProtocolCMD_btn = findViewById(R.id.setProtocolCMD_btn);
 
         kLineLayout = findViewById(R.id.kLineLayout);
         kLine_speed = findViewById(R.id.kLine_speed);
@@ -610,6 +612,18 @@ public class MainActivity extends AppCompatActivity implements
 /*
 * Buttons
 * */
+
+        setProtocolCMD_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    sendSetProtocolCMD();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         showToggleLayout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -661,7 +675,12 @@ public class MainActivity extends AppCompatActivity implements
         resetCMD_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // sendResetCMD();
+                try {
+                    sendResetCMD();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    displayErrorLog("Reset CMD Error:\t" + e.getMessage());
+                }
             }
         });
 
@@ -670,7 +689,6 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 try {
                     repeatingSpeedCMD();
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -680,9 +698,6 @@ public class MainActivity extends AppCompatActivity implements
         showStatus_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //sendDisplayProtocolCMD(MainActivity.this);
-                //sendPrintSummaryCMD(getApplicationContext());
-                // getSpeedManually(getApplicationContext(), true);
                 try {
                     repeatingRPMCMD();
                 } catch (InterruptedException e) {
@@ -791,7 +806,7 @@ public class MainActivity extends AppCompatActivity implements
                 });
             }
         };
-        timer.scheduleAtFixedRate(repeatingTimerTask, 1000, 5000);
+        timer.scheduleAtFixedRate(repeatingTimerTask, 5000, 15000);
     }
 
     private synchronized void repeatingRPMCMD() throws InterruptedException {
@@ -807,7 +822,7 @@ public class MainActivity extends AppCompatActivity implements
                 });
             }
         };
-        timer.scheduleAtFixedRate(repeatingRPMTimerTask, 1000, 5000);
+        timer.scheduleAtFixedRate(repeatingRPMTimerTask, 5000, 15000);
     }
 
 
@@ -815,34 +830,42 @@ public class MainActivity extends AppCompatActivity implements
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, PIDConstants.CHECK_IGNITION_POSITION, mIOGateway);
+                new SendOBD2CMD(MainActivity.this, PIDConstants.CHECK_IGNITION_POSITION, mIOGateway);
             }
         });
     }
 
-    private synchronized void sendIdentifyCMD() {
-        Thread identifyThread = new Thread(new Runnable() {
+    private synchronized void sendSetProtocolCMD() throws InterruptedException {
+        counter4++;
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                String displayProtocol = "AT DP";
-                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, PIDConstants.IDENTIFY_YOURSELF, mIOGateway);
+                if (Thread.interrupted()) {
+                    return;
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new SendNewOBD2CMD(MainActivity.this, PIDConstants.PROTOCOL_AUTO, mIOGateway);
+                        displayLog("Protocol Set to AUTO: \tCommand Sent " + counter4 + " time(s)");
+
+                    }
+                });
             }
         });
-        identifyThread.start();
+        thread.start();
+
     }
 
     private synchronized void sendResetCMD() {
-        String[] resetCMD = {PIDConstants.RESET, PIDConstants.PROTOCOL_AUTO,PIDConstants.DISABLE_KEYWORDS};
-        Thread resetThread = new Thread(new Runnable() {
+        counter3++;
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                        for (String cmd: resetCMD) {
-                            new SendOBD2CMD(MainActivity.this, cmd, mIOGateway);
-                            displayLog("CMDs Sent");
-                        }
+                new SendOBD2CMD(MainActivity.this, PIDConstants.RESET, mIOGateway);
+                displayLog("RESET SENT:\t" + counter3 + " Time(s)");
             }
         });
-        resetThread.start();
     }
 
     private synchronized void sendStatusRequestCMD() {
@@ -851,7 +874,12 @@ public class MainActivity extends AppCompatActivity implements
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, statusRequest, mIOGateway);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendOBD2CMD = new SendOBD2CMD(MainActivity.this, statusRequest, mIOGateway);
+                    }
+                });
             }
         },30000); // Wait 30 seconds before (re)sending
     }
@@ -861,7 +889,7 @@ public class MainActivity extends AppCompatActivity implements
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                sendOBD2CMD = new SendOBD2CMD(MainActivity.this, printSummary, mIOGateway);
+                new SendOBD2CMD(MainActivity.this, printSummary, mIOGateway);
             }
         });
     }
@@ -872,7 +900,7 @@ public class MainActivity extends AppCompatActivity implements
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    sendOBD2CMD = new SendOBD2CMD(MainActivity.this, monitorAll, mIOGateway);
+                    new SendOBD2CMD(MainActivity.this, monitorAll, mIOGateway);
                 }
             });
         } catch (Exception e) {
@@ -899,8 +927,7 @@ public class MainActivity extends AppCompatActivity implements
                             mConnectionStatus.setText(getString(R.string.BT_status_connected_to) + " " + mConnectedDeviceName);
                             mConnectionStatus.setBackgroundColor(Color.rgb(65, 131, 19));
                             try {
-                                startInitializationSequence();
-                                displayLog("Initialization Started...");
+                                sendSetProtocolCMD();
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 displayErrorLog("Initialization Failed\t" + e.getMessage());
@@ -1364,6 +1391,7 @@ public class MainActivity extends AppCompatActivity implements
                                 mIOGateway);
                         displayLog("Initialization CMD Sent:\t" + sendCommand + "\tNum:\t" + counter2);
                         INITIALIZATION_COMMANDS.clear();
+                        displayLog("INITIALIZATION_COMMANDS CLEARED: \t" + INITIALIZATION_COMMANDS);
                     }
                 }
                 try {

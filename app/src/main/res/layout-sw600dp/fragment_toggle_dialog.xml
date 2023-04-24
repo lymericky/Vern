@@ -630,40 +630,45 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout16"
         android:orientation="horizontal"
-        android:background="@color/white"
+        android:background="@color/black"
         android:layout_centerHorizontal="true"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:layout_marginBottom="5dp">
 
         <RadioButton
             android:id="@+id/ib10_rb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ib_10"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/blue"/>
         <RadioButton
             android:id="@+id/ib12_rb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ib_12"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/blue"/>
         <RadioButton
             android:id="@+id/ib15_rb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ib_15"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/blue"/>
         <RadioButton
             android:id="@+id/ib48_rb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ib_48"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/blue"/>
         <RadioButton
             android:id="@+id/ib96_rb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ib_96"/>
-
+            android:text="@string/ib_96"
+            android:textColor="@color/blue"/>
     </RadioGroup>
 
     <Button
@@ -674,7 +679,9 @@
         android:layout_toEndOf="@+id/baudRadioGroup"
         android:layout_alignTop="@+id/baudRadioGroup"
         android:layout_alignBottom="@+id/baudRadioGroup"
-        android:layout_marginStart="10dp"/>
+        android:layout_marginStart="10dp"
+        style="@style/Widget.AppCompat.Button"/>
+
     <TextView
         android:id="@+id/baudRate_txt"
         android:layout_width="wrap_content"

@@ -56,7 +56,7 @@
                     android:layout_alignStart="@+id/set_btn"
                     android:layout_alignEnd="@+id/set_btn"
                     android:layout_toEndOf="@+id/viewData_btn"
-                    android:text="@string/send_cmd"
+                    android:text="@string/speed"
                     tools:ignore="TextContrastCheck" />
 
                 <Button
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/sendCMD_btn"
                     android:layout_toEndOf="@+id/viewHUD_btn"
-                    android:text="@string/show_status"
+                    android:text="@string/rpm"
                     tools:ignore="TextContrastCheck"
                     android:layout_marginStart="10dp"/>
 
@@ -149,6 +149,15 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="20dp"
                     android:layout_marginTop="20dp"/>
+
+                <Button
+                    android:id="@+id/setProtocolCMD_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/resetCMD_btn"
+                    android:layout_alignStart="@+id/resetCMD_btn"
+                    android:layout_alignEnd="@+id/resetCMD_btn"
+                    android:text="@string/set_protocol"/>
 
             </RelativeLayout>
 

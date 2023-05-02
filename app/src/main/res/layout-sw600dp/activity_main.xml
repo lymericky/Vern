@@ -24,30 +24,22 @@
             android:text="@string/BT_connection_status" />
         <TextView
             android:id="@+id/deviceStatus_txt"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/device"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:layout_below="@+id/tvConnectionStatus"
-            android:gravity="center_horizontal"/>
+            android:gravity="center_horizontal"
+            android:layout_centerHorizontal="true"/>
 
         <LinearLayout
             android:id="@+id/kLineLayout"
-            android:layout_width="250dp"
+            android:layout_width="450dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_below="@+id/deviceStatus_txt"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:hint="@string/k_line_data_only"
-                android:textColorHint="@color/halo_red"
-                tools:ignore="TextContrastCheck" />
+            android:layout_centerHorizontal="true">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -73,28 +65,36 @@
 
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/output_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/protocol"
-                android:textColor="@color/green"
-                android:textColorHint="@color/white"/>
-            <TextView
-                android:id="@+id/standards_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/standards"
-                android:textColorHint="@color/white"
-                android:textColor="@color/green"/>
-
-
             <LinearLayout
-                android:id="@+id/kLineToggleLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/protocol_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/protocol"
+                    android:textColor="@color/green"
+                    android:textColorHint="@color/white"
+                    android:layout_marginEnd="5dp"/>
+                <TextView
+                    android:id="@+id/standards_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/standards"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/green"
+                    android:layout_marginStart="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kLineToggleLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
 
                 <ToggleButton
                     android:id="@+id/kLineCMD_tb"
@@ -105,14 +105,181 @@
                     android:id="@+id/kLineToggleLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/k_line"
+                    android:text="@string/activate"
                     android:textColor="@color/white"
                     android:layout_marginHorizontal="15dp"/>
             </LinearLayout>
         </LinearLayout>
 
+            <RadioGroup
+                android:id="@+id/cmd_rg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/kLineLayout">
+
+                <RadioButton
+                    android:id="@+id/reset_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reset"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:id="@+id/speed_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/speed"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:id="@+id/rpm_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rpm"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:id="@+id/voltage_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/voltage"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:id="@+id/load_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/load"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:id="@+id/coolantTemp_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/coolant_temp"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:id="@+id/pidSupported_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/supported"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:id="@+id/throttlePos_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/throttle_position"
+                    android:textColor="@color/white"/>
+
+            </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/protocol_rg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/outputLayout"
+            android:layout_alignTop="@+id/outputLayout">
+
+            <RadioButton
+                android:id="@+id/proto9141_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_9141_2"
+                android:textColor="@color/white"/>
+            <RadioButton
+                android:id="@+id/kwp2000_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kwp2000"
+                android:textColor="@color/white"/>
+            <RadioButton
+                android:id="@+id/kwpFAST_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kwp_fast"
+                android:textColor="@color/white"/>
+            <RadioButton
+                android:id="@+id/CAN15765_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/can_15765"
+                android:textColor="@color/white"/>
+            <RadioButton
+                android:id="@+id/auto_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/auto"
+                android:textColor="@color/white"/>
+
+        </RadioGroup>
+
+        <ScrollView
+            android:id="@+id/outputLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/cmd_rg"
+            android:layout_below="@+id/kLineLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:nestedScrollingEnabled="true"
+            android:gravity="bottom">
+
+            <TextView
+                android:id="@+id/read_txt"
+                android:layout_width="300dp"
+                android:layout_height="400dp"
+                android:layout_margin="5dp"
+                android:background="@color/white"
+                android:gravity="bottom|center_horizontal"
+                android:hint="@string/read"
+                android:scrollbars="vertical"
+                android:text="@string/dashes"
+                android:textColor="@color/halo_red"
+                android:textColorHint="@color/halo_red"
+                tools:ignore="TextContrastCheck"
+                android:textSize="12pt"/>
+            <TextView
+                android:id="@+id/write_txt"
+                android:layout_width="300dp"
+                android:layout_height="400dp"
+                android:text="@string/dashes"
+                android:textColor="@color/purple_700"
+                android:textColorHint="@color/purple_700"
+                android:hint="@string/write"
+                android:background="@color/white"
+                android:layout_margin="5dp"
+                android:gravity="bottom|center_horizontal"
+                android:textSize="12pt"/>
+
+        </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/bleInfo_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toEndOf="@+id/protocol_rg"
+            android:layout_below="@+id/kLineLayout">
+
+            <TextView
+                android:id="@+id/remote_device_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/BT_status_connected_to"
+                android:textColorHint="#FFEB3B"
+                android:textSize="12pt" />
+            <TextView
+                android:id="@+id/mac_address_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/mac_address"
+                android:textColorHint="#FFEB3B"
+                android:textSize="12pt"/>
 
 
+
+        </LinearLayout>
     </RelativeLayout>
 
     <androidx.fragment.app.FragmentContainerView

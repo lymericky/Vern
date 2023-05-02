@@ -34,10 +34,10 @@
     <string name="reload">RELOAD</string>
     <string name="coolant_temp">Coolant Temp: </string>
     <string name="voltage">ATRV</string>
-    <string name="vin">0902</string>
-    <string name="fuel_level">012F</string>
+    <string name="vin">VIN</string>
+    <string name="fuel_level">Fuel Level</string>
     <string name="dist_traveled">Dist Traveled:</string>
-    <string name="odometer">01A6</string>
+    <string name="odometer">Odometer</string>
     <string name="selection">Selection</string>
     <string name="obd_commands">OBD Commands</string>
     <string name="nothing_selected">Nothing Selected</string>
@@ -45,17 +45,17 @@
     <string name="ignition_status">Ignition Status</string>
     <string name="ignition_type">01B3</string>
     <string name="cm_voltage">0142</string>
-    <string name="oil_temp">015C</string>
-    <string name="intake_temp">010F</string>
-    <string name="ambient_temp">0146</string>
-    <string name="fuel_type">0151</string>
+    <string name="oil_temp">Oil Temp</string>
+    <string name="intake_temp">Intake Temp</string>
+    <string name="ambient_temp">Ambient Temp</string>
+    <string name="fuel_type">Fuel Type</string>
     <string name="consumption_rate">015F</string>
     <string name="rail_pressure">0122</string>
     <string name="air_fuel_ratio">0144</string>
     <string name="barometric_pressure">0122</string>
     <string name="intake_manifold_pressure">014F</string>
-    <string name="load">0104</string>
-    <string name="throttle_position">0111</string>
+    <string name="load">Load</string>
+    <string name="throttle_position">Throttle Position</string>
     <string name="engine_runtime">011F</string>
     <string name="maf">0166</string>
     <string name="all_trouble_codes">All Trouble Codes</string>
@@ -67,10 +67,10 @@
     <string name="time_codes_cleared">014E</string>
     <string name="timing_advance">010E</string>
     <string name="cmd_equivalence_ratio">0112</string>
-    <string name="reset">Resetting…</string>
+    <string name="reset">Reset</string>
     <string name="na">NA</string>
     <string name="response">Response :</string>
-    <string name="supported">0100</string>
+    <string name="supported">PID Supported</string>
     <string name="clear">0400</string>
     <string name="def_cmd">DEF</string>
     <string name="user_cmd">USER</string>
@@ -90,6 +90,14 @@
     <string name="k_line_data_only">K-LINE DATA Only</string>
     <string name="k_line">K-Line</string>
     <string name="device">Device</string>
+    <string name="kwp2000">KWP2000</string>
+    <string name="_9141_2">9141–2</string>
+    <string name="read">READ</string>
+    <string name="write">WRITE</string>
+    <string name="kwp_fast">KWP FAST</string>
+    <string name="can_15765">CAN 15765</string>
+    <string name="auto">AUTO</string>
+    <string name="mac_address">MAC Address</string>
 
     <string-array name="obd_cmd">
         <item>CMD Selection</item>

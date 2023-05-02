@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.denommeinc.vern.MainActivity;
 import com.denommeinc.vern.utility.MyLog;
@@ -527,6 +530,7 @@ public class BluetoothIOGateway
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
+        private String mac;
 
         public ConnectedThread(BluetoothSocket socket, String socketType)
         {
@@ -534,6 +538,7 @@ public class BluetoothIOGateway
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
+            mac = socket.getRemoteDevice().getAddress();
 
             // Get the BluetoothSocket input and output streams
             try
@@ -567,6 +572,14 @@ public class BluetoothIOGateway
 
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+
+                    Log.i("BLE_IO_GATEWAY", "MAC:\t" + mac);
+                    // Send Mac Address to the UI Activity
+                    Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_MAC_ADDRESS);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MainActivity.MAC_ADDRESS, mac);
+                    msg.setData(bundle);
+                    mHandler.sendMessage(msg);
                 }
                 catch (IOException e)
                 {

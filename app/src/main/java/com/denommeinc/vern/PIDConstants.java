@@ -42,8 +42,14 @@ public class PIDConstants {
             SHOW_DTC_CODES = "03",
             VIN = "0902",
             FUEL_PRESSURE = "010A",
-            PP_14230_KWP4 = "AT TP A4",
-            PP_14230_KWP5_FAST = "AT TP A5"
+            PP_14230_KWP4 = "AT TP A4", // (5 baud init, 10.4 kbaud)
+            PP_14230_KWP5_FAST = "AT TP A5", //(fast init, 10.4 kbaud)
+            PROTOCOL_3_9141 = "AT TPA3", //(5 baud init, 10.4 kbaud)
+            PROTOCOL_0_AUTO = "AT SP00",
+            PROTOCOL_6_15765 = "AT TPA6", // (11 bit ID, 500 kbaud)
+            PROTOCOL_7_15765 = "AT TPA7", // (29 bit ID, 500 kbaud)
+            PROTOCOL_8_15765 = "AT STA8", // (11 bit ID, 250 kbaud)
+            PROTOCOL_9_15765 = "AT TPA9" // (29 bit ID, 250 kbaud)
     ;
 
 

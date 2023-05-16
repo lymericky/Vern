@@ -179,17 +179,22 @@ public class MainActivity extends AppCompatActivity implements
     // Single Use Commands
     private static final String[] AT_COMMANDS = {
             "AT Z", // case 0 // Reset
-            "AT SP 0", // case 1 Automatically Search/Select Protocol
-            //"AT H1", // Enable Header Bytes
+            "AT TP A3", // case 1 Automatically Search/Select Protocol
+            "AT H1", // Enable Header Bytes
+            "AT I", // Initialize
             "AT DP", // Display Current Protocol
             "AT DP N", // Display Current Protocol by Number
-            "AT RV" // Voltage
+            "AT RV", // Voltage
+            "AT AL" // Allow Long Response
     };
 
     //Basic Commands
     private static final String[] BASIC_COMMANDS = {
-            "AT TP5", // case 1 Automatically Search/Select Protocol
-            //"AT Z", // Reset
+          //  "AT Z", // Reset
+         //   "AT SP 00", // case 1 Automatically Search/Select Protocol 9141
+          //  "AT H1",
+          //  "AT AL",
+            "AT I",
             "0105", // Engine Coolant Temp // case 2
             "010C", // RPM // case 3
             "010D", // Speed // case 4
@@ -212,8 +217,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //User Selected Commands
     public static String[] USER_COMMANDS = {
-            PIDConstants.PROTOCOL,
-            PIDConstants.OBD_STANDARDS
+            PIDConstants.ENGINE_RPM
     };
 
     ArrayList<String> SELECTED_COMMAND = new ArrayList<>();
@@ -317,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements
 
         allCMD_tb = findViewById(R.id.allCMD_tb);
         basicCMD_tb = findViewById(R.id.basicCMD_tb);
-        basicCMD_tb.setChecked(true);
+       // basicCMD_tb.setChecked(true);
         sendCMD_btn = findViewById(R.id.sendCMD_btn);
         hideLayout_btn = findViewById(R.id.hideLayout_btn);
         kLineLayout = findViewById(R.id.kLineLayout);
@@ -359,8 +363,8 @@ public class MainActivity extends AppCompatActivity implements
         sendCMD_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendUserCommands(getApplicationContext());
-                sendAllCommands(getApplicationContext());
+                sendUserCommands(MainActivity.this);
+                //sendBasicCommands(MainActivity.this);
             }
         });
 
@@ -368,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    sendAllCommands(getApplicationContext());
+                        sendAllCommands(MainActivity.this);
                 }
             }
         });
@@ -377,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    sendBasicCommands(getApplicationContext());
+                    sendBasicCommands(MainActivity.this);
                 }
             }
         });
@@ -467,8 +471,8 @@ public class MainActivity extends AppCompatActivity implements
                         case BluetoothIOGateway.STATE_CONNECTED:
                             mConnectionStatus.setText(getString(R.string.BT_status_connected_to) + " " + mConnectedDeviceName);
                             mConnectionStatus.setBackgroundColor(Color.rgb(65, 131, 19));
-                            sendBasicCommands(getApplicationContext());
-                            INITIAL_SENT = true;
+                            //sendBasicCommands(getApplicationContext());
+                           // INITIAL_SENT = true;
                             setCONNECTED(true);
                             break;
 
@@ -834,16 +838,12 @@ public class MainActivity extends AppCompatActivity implements
             userCMDPointer = -1;
         }
         userCMDPointer++;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 try {
                     sendOBD2CMD = new SendOBD2CMD(context, USER_COMMANDS[userCMDPointer], mIOGateway);
                 } catch (Exception e) {
                     displayErrorLog(e.getMessage());
-                }
-            }
-        });
+
+        }
     }
 
     private void sendAllCommands(Context context) {
@@ -861,12 +861,7 @@ public class MainActivity extends AppCompatActivity implements
             allCMDPointer = -1;
         }
         allCMDPointer++;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                sendOBD2CMD = new SendOBD2CMD(context, ALL_COMMANDS[allCMDPointer], mIOGateway);
-            }
-        });
+        sendOBD2CMD = new SendOBD2CMD(context, ALL_COMMANDS[allCMDPointer], mIOGateway);
     }
 
     private void sendBasicCommands(Context context) {
@@ -883,12 +878,9 @@ public class MainActivity extends AppCompatActivity implements
             initialCMDPointer = 1;
         }
         initialCMDPointer++;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                sendOBD2CMD = new SendOBD2CMD(context, BASIC_COMMANDS[initialCMDPointer], mIOGateway);
-            }
-        });
+
+        sendOBD2CMD = new SendOBD2CMD(context, BASIC_COMMANDS[initialCMDPointer], mIOGateway);
+
     }
 
     @SuppressLint("SetTextI18n")
